@@ -1,0 +1,39 @@
+entity.dependent_content.canonical:
+  path: '/dependent-content/{dependent_content}'
+  defaults:
+    _entity_form: 'dependent_content.edit'
+    _title: 'Edit dependent content'
+  requirements:
+    _permission: 'administer content'
+
+entity.dependent_content.add_form:
+  path: '/dependent-content/add'
+  defaults:
+    _entity_form: 'dependent_content.add'
+    _title: 'Add dependent content'
+  requirements:
+    _permission: 'administer content'
+
+entity.dependent_content.edit_form:
+  path: '/dependent_content/{dependent_content}/edit'
+  defaults:
+    _entity_form: 'dependent_content.edit'
+    _title: 'Edit dependent content'
+  requirements:
+    _permission: 'administer content'
+
+entity.dependent_content.delete_form:
+  path: '/dependent_content/{dependent_content}/delete'
+  defaults:
+    _entity_form: 'dependent_content.delete'
+    _title: 'Delete dependent content'
+  requirements:
+    _permission: 'administer content'
+
+entity.dependent_content.collection:
+  path: '/admin/content/dependent-content'
+  defaults:
+    _entity_list: 'dependent_content'
+    _title: 'Dependent content'
+  requirements:
+    _permission: 'administer content'

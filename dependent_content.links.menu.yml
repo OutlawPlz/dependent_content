@@ -1,0 +1,8 @@
+# Menu links
+# <module_name>.<menu_name>.<route_name> - Route name refers to dependent_content.routing.yml
+
+dependent_content.administration.collection:
+  title: 'Dependent content'
+  route_name: entity.dependent_content.collection
+  description: 'List dependent content entities'
+  parent: system.admin_content
