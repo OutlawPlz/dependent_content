@@ -14,14 +14,20 @@ use Drupal\dependent_content\DependentContentInterface;
 use Drupal\user\UserInterface;
 
 /**
+ * Defines the dependent content entity class.
+ *
  * @ContentEntityType(
  *   id = "dependent_content",
  *   label = @Translation("Dependent content"),
+ *   bundle_label = @Translation("Dependent content type"),
  *   base_table = "dependent_content",
  *   fieldable = TRUE,
+ *   bundle_entity_type = "dependent_content_type",
+ *   field_ui_base_route = "entity.dependent_content_type.edit_form",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
+ *     "bundle" = "type",
  *     "langcode" = "langcode",
  *     "status" = "status",
  *     "uid" = "uid",
@@ -38,7 +44,7 @@ use Drupal\user\UserInterface;
  *   },
  *   links = {
  *     "canonical" = "/dependent-content/{dependent_content}",
- *     "add-form" = "/dependent-content/add",
+ *     "add-form" = "/dependent-content/add/{dependent_content_type}",
  *     "edit-form" = "/dependent-content/{dependent_content}/edit",
  *     "delete-form" = "/dependent-content/{dependent_content}/delete",
  *     "collection" = "/admin/content/dependent-content",
@@ -210,6 +216,12 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
       ->setRequired(TRUE)
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
+
+    $fields['type'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Type'))
+      ->setDescription(t('The Dependent content type/bundle.'))
+      ->setSetting('target_type', 'dependent_content_type')
+      ->setRequired(TRUE);
 
     $fields['uuid'] = BaseFieldDefinition::create('uuid')
       ->setLabel(t('UUID'))

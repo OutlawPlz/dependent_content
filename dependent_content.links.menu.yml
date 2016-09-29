@@ -6,3 +6,9 @@ dependent_content.administration.collection:
   route_name: entity.dependent_content.collection
   description: 'List dependent content entities'
   parent: system.admin_content
+
+dependent_content_type.administration.collection:
+  title: 'Dependent content type'
+  route_name: entity.dependent_content_type.collection
+  description: 'List dependent content type entities'
+  parent: system.admin_structure

@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Allows the creation of custom dependent contents through the user interface.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function dependent_content_theme() {
+
+  $theme = [];
+
+  $theme['dependent_content_add_list'] = [
+    'render element' => 'content',
+    'variables' => ['content' => NULL],
+    'file' => 'dependent_content.page.inc',
+    'template' => 'dependent-content-add-list'
+  ];
+
+  return $theme;
+}

@@ -1,8 +1,7 @@
 <?php
-
 /**
  * @file
- * Contains \Drupal\dependent_content\DependentContentListBuilder
+ * Contains \Drupal\dependent_content\DependentContentTypeListBuilder
  */
 
 namespace Drupal\dependent_content;
@@ -10,7 +9,7 @@ namespace Drupal\dependent_content;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 
-class DependentContentListBuilder extends EntityListBuilder {
+class DependentContentTypeListBuilder extends EntityListBuilder {
 
   /**
    * Builds the header row for the entity listing.
@@ -20,7 +19,7 @@ class DependentContentListBuilder extends EntityListBuilder {
    */
   public function buildHeader() {
 
-    $header['title'] = t('Title');
+    $header['label'] = t('Label');
 
     return $header + parent::buildHeader();
   }
@@ -35,7 +34,7 @@ class DependentContentListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
 
-    $row['title'] = $entity->label();
+    $row['label'] = $entity->label();
 
     return $row + parent::buildRow($entity);
   }

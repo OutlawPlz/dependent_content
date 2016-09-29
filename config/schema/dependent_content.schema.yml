@@ -1,0 +1,19 @@
+dependent_content.dependent_content_type.*:
+  type: config_entity
+  label: 'Dependent content settings'
+  mapping:
+    id:
+      type: string
+      label: 'Machine-readable name'
+    label:
+      type: label
+      label: 'Label'
+    description:
+      type: text
+      label: 'Description'
+    langcode:
+      type: string
+      label: 'Default language'
+    uuid:
+      type: string
+      label: 'UUID'

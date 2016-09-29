@@ -7,9 +7,9 @@ entity.dependent_content.canonical:
     _permission: 'administer content'
 
 entity.dependent_content.add_form:
-  path: '/dependent-content/add'
+  path: '/dependent-content/add/{dependent_content_type}'
   defaults:
-    _entity_form: 'dependent_content.add'
+    _controller: '\Drupal\dependent_content\Controller\DependentContentController::addForm'
     _title: 'Add dependent content'
   requirements:
     _permission: 'administer content'
@@ -30,6 +30,14 @@ entity.dependent_content.delete_form:
   requirements:
     _permission: 'administer content'
 
+entity.dependent_content.add_page:
+  path: '/dependent-content/add'
+  defaults:
+    _controller: '\Drupal\dependent_content\Controller\DependentContentController::addPage'
+    _title: 'Add dependent content'
+  requirements:
+    _permission: 'administer content'
+
 entity.dependent_content.collection:
   path: '/admin/content/dependent-content'
   defaults:
@@ -37,3 +45,43 @@ entity.dependent_content.collection:
     _title: 'Dependent content'
   requirements:
     _permission: 'administer content'
+
+entity.dependent_content_type.canonical:
+  path: '/admin/structure/dependent-content/{dependent_content_type}'
+  defaults:
+    _entity_form: 'dependent_content_type.edit'
+    _title: 'Edit dependent content type'
+  requirements:
+    _permission: 'administer content types'
+
+entity.dependent_content_type.add_form:
+  path: '/admin/structure/dependent-content/add'
+  defaults:
+    _entity_form: 'dependent_content_type.add'
+    _title: 'Add dependent content type'
+  requirements:
+    _permission: 'administer content types'
+
+entity.dependent_content_type.edit_form:
+  path: '/admin/structure/dependent-content/{dependent_content_type}/edit'
+  defaults:
+    _entity_form: 'dependent_content_type.edit'
+    _title: 'Edit dependent content type'
+  requirements:
+    _permission: 'administer content types'
+
+entity.dependent_content_type.delete_form:
+  path: '/admin/structure/dependent-content/{dependent_content_type}/delete'
+  defaults:
+    _entity_form: 'dependent_content_type.delete'
+    _title: 'Delete dependent content type'
+  requirements:
+    _permission: 'administer content types'
+
+entity.dependent_content_type.collection:
+  path: '/admin/structure/dependent-content'
+  defaults:
+    _entity_list: 'dependent_content_type'
+    _title: 'Dependent content type'
+  requirements:
+    _permission: 'administer content types'
