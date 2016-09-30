@@ -1,0 +1,23 @@
+{#
+/**
+ * @file dependent_content.html.twig
+ * Default theme implementation to present Dependent content data.
+ *
+ * This template is used when viewing Dependent content pages.
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_dependent_content()
+ *
+ * @ingroup themeable
+ */
+#}
+
+<div{{ attributes.addClass('example') }}>
+    {% if content %}
+        {{- content -}}
+    {% endif %}
+</div>

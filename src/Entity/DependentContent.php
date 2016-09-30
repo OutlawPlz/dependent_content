@@ -21,9 +21,8 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Dependent content"),
  *   bundle_label = @Translation("Dependent content type"),
  *   base_table = "dependent_content",
+ *   admin_permission = "administer content",
  *   fieldable = TRUE,
- *   bundle_entity_type = "dependent_content_type",
- *   field_ui_base_route = "entity.dependent_content_type.edit_form",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
@@ -34,7 +33,9 @@ use Drupal\user\UserInterface;
  *     "uuid" = "uuid"
  *   },
  *   handlers = {
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\dependent_content\DependentContentListBuilder",
+ *     "views_data" = "Drupal\dependent_content\Entity\DependentContentViewsData",
  *     "form" = {
  *       "default" = "Drupal\dependent_content\Form\DependentContentForm",
  *       "add" = "Drupal\dependent_content\Form\DependentContentForm",
@@ -47,8 +48,10 @@ use Drupal\user\UserInterface;
  *     "add-form" = "/dependent-content/add/{dependent_content_type}",
  *     "edit-form" = "/dependent-content/{dependent_content}/edit",
  *     "delete-form" = "/dependent-content/{dependent_content}/delete",
- *     "collection" = "/admin/content/dependent-content",
- *   }
+ *     "collection" = "/admin/content/dependent-content"
+ *   },
+ *   bundle_entity_type = "dependent_content_type",
+ *   field_ui_base_route = "entity.dependent_content_type.edit_form"
  * )
  */
 class DependentContent extends ContentEntityBase implements DependentContentInterface {

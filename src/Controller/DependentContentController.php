@@ -97,7 +97,7 @@ class DependentContentController extends ControllerBase {
 
     $entity = $this->dependent_content_storage->create(array(
       'type' => $dependent_content_type->id()
-    )); 
+    ));
 
     return $this->entityFormBuilder()->getForm($entity);
   }

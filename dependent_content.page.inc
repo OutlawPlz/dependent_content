@@ -4,7 +4,25 @@
  * Contains dependent_content.page.inc
  */
 
-Use \Drupal\Core\Link;
+use \Drupal\Core\Link;
+use \Drupal\Core\Render\Element;
+
+/**
+ * Prepare variables for dependent content templates.
+ *
+ * Default template: dependent_content.html.twig
+ *
+ * @param array $variables
+ *   An associative array containing:
+ */
+function template_preprocess_dependent_content(&$variables) {
+
+  kint($variables); kint($variables['elements']);
+
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
+}
 
 /**
  * Prepare variables for list of available dependent content type templates.
