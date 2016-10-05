@@ -29,7 +29,7 @@ use Drupal\dependent_content\DependentContentTypeInterface;
  *     "label",
  *     "description"
  *   },
- *   admin_permission = "administer site configuration",
+ *   admin_permission = "administer dependent content types",
  *   bundle_of = "dependent_content",
  *   entity_keys = {
  *     "id" = "id",

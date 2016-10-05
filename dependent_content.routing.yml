@@ -3,85 +3,107 @@ entity.dependent_content.canonical:
   defaults:
     _entity_form: 'dependent_content.edit'
     _title: 'Edit dependent content'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content'
+    _permission: 'administer dependent content'
 
 entity.dependent_content.add_form:
   path: '/dependent-content/add/{dependent_content_type}'
   defaults:
     _controller: '\Drupal\dependent_content\Controller\DependentContentController::addForm'
     _title: 'Add dependent content'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content'
+    _entity_create_access: 'dependent_content:{dependent_content_type}'
 
 entity.dependent_content.edit_form:
   path: '/dependent_content/{dependent_content}/edit'
   defaults:
     _entity_form: 'dependent_content.edit'
     _title: 'Edit dependent content'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content'
+    _entity_access: 'dependent_content.update'
 
 entity.dependent_content.delete_form:
   path: '/dependent_content/{dependent_content}/delete'
   defaults:
     _entity_form: 'dependent_content.delete'
     _title: 'Delete dependent content'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content'
+    _entity_access: 'dependent_content.delete'
 
 entity.dependent_content.add_page:
   path: '/dependent-content/add'
   defaults:
     _controller: '\Drupal\dependent_content\Controller\DependentContentController::addPage'
     _title: 'Add dependent content'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content'
+    _entity_create_access: 'dependent_content'
 
 entity.dependent_content.collection:
   path: '/admin/content/dependent-content'
   defaults:
     _entity_list: 'dependent_content'
     _title: 'Dependent content'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content'
+    _permission: 'access dependent content overview'
 
 entity.dependent_content_type.canonical:
   path: '/admin/structure/dependent-content/{dependent_content_type}'
   defaults:
     _entity_form: 'dependent_content_type.edit'
     _title: 'Edit dependent content type'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content types'
+    _permission: 'administer dependent content types'
 
 entity.dependent_content_type.add_form:
   path: '/admin/structure/dependent-content/add'
   defaults:
     _entity_form: 'dependent_content_type.add'
     _title: 'Add dependent content type'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content types'
+    _permission: 'administer dependent content types'
 
 entity.dependent_content_type.edit_form:
   path: '/admin/structure/dependent-content/{dependent_content_type}/edit'
   defaults:
     _entity_form: 'dependent_content_type.edit'
     _title: 'Edit dependent content type'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content types'
+    _permission: 'administer dependent content types'
 
 entity.dependent_content_type.delete_form:
   path: '/admin/structure/dependent-content/{dependent_content_type}/delete'
   defaults:
     _entity_form: 'dependent_content_type.delete'
     _title: 'Delete dependent content type'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content types'
+    _permission: 'administer dependent content types'
 
 entity.dependent_content_type.collection:
   path: '/admin/structure/dependent-content'
   defaults:
     _entity_list: 'dependent_content_type'
     _title: 'Dependent content type'
+  options:
+    _admin_route: TRUE
   requirements:
-    _permission: 'administer content types'
+    _permission: 'administer dependent content types'

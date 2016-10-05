@@ -68,7 +68,7 @@ class DependentContentListBuilder extends EntityListBuilder {
   public function buildHeader() {
 
     $header = array(
-      'title' => $this->t('Title'),
+      'label' => $this->t('Content description'),
 
       'type' => array(
         'data' => $this->t('Type'),
@@ -107,7 +107,7 @@ class DependentContentListBuilder extends EntityListBuilder {
    */
   public function buildRow(DependentContentInterface $entity) {
 
-    $row['title'] = $entity->label();
+    $row['label'] = $entity->label();
     $row['type'] = $entity->bundle();
     $row['author']['data'] = array(
       '#theme' => 'username',

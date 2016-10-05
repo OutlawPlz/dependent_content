@@ -21,7 +21,6 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Dependent content"),
  *   bundle_label = @Translation("Dependent content type"),
  *   base_table = "dependent_content",
- *   admin_permission = "administer content",
  *   fieldable = TRUE,
  *   entity_keys = {
  *     "id" = "id",
@@ -36,6 +35,7 @@ use Drupal\user\UserInterface;
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\dependent_content\DependentContentListBuilder",
  *     "views_data" = "Drupal\dependent_content\Entity\DependentContentViewsData",
+ *     "access" = "Drupal\dependent_content\DependentContentAccessControlHandler",
  *     "form" = {
  *       "default" = "Drupal\dependent_content\Form\DependentContentForm",
  *       "add" = "Drupal\dependent_content\Form\DependentContentForm",

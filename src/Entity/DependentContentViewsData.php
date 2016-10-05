@@ -24,10 +24,14 @@ class DependentContentViewsData extends EntityViewsData implements EntityViewsDa
 
     $data = parent::getViewsData();
 
-    $data['dependent_content']['table']['base'] = array(
-      'field' => 'id',
-      'title' => $this->t('Dependent content'),
-      'help' => $this->t('The dependent content id')
+    $data['dependent_content']['status_extra'] = array(
+      'title' => $this->t('Published status or admin user'),
+      'help' => $this->t('Filters out unpublished content if the current user cannot view it.'),
+      'filter' => array(
+        'field' => 'status',
+        'id' => 'dependent_content_status',
+        'label' => $this->t('Published status or admin user')
+      )
     );
 
     return $data;

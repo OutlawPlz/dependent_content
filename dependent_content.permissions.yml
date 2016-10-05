@@ -1,0 +1,18 @@
+administer dependent content types:
+  title: 'Administer dependent content types'
+  description: 'Maintain the types of dependent content available and the fields that are associated with those types.'
+  restrict access: true
+
+administer dependent content:
+  title: 'Administer dependent content'
+  description: 'Create, edit and delete dependent content.'
+
+access dependent content:
+  title: 'View published depedent content'
+
+view unpublished dependent content:
+  title: 'View unpublished dependent content'
+
+access dependent content overview:
+  title: 'Access the dependent content overview page'
+  description: 'Get an overview of all dependent content.'
