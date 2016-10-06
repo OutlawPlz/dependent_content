@@ -6,6 +6,7 @@
 
 namespace Drupal\dependent_content;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 
 class DependentContentTypeListBuilder extends EntityListBuilder {
@@ -38,5 +39,26 @@ class DependentContentTypeListBuilder extends EntityListBuilder {
     $row['description'] = $entity->getDescription();
 
     return $row + parent::buildRow($entity);
+  }
+
+
+  /**
+   * Gets this list's default operations.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity the operations are for.
+   * @return array
+   *   The array structure is identical to the return value of
+   *   self::getOperations().
+   */
+  public function getDefaultOperations(EntityInterface $entity) {
+
+    $operations = parent::getDefaultOperations($entity);
+
+    if (isset($operations['edit'])) {
+      $operations['edit']['weight'] = 30;
+    }
+
+    return $operations;
   }
 }

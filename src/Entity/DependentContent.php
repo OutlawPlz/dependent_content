@@ -51,7 +51,7 @@ use Drupal\user\UserInterface;
  *     "collection" = "/admin/content/dependent-content"
  *   },
  *   bundle_entity_type = "dependent_content_type",
- *   field_ui_base_route = "entity.dependent_content_type.edit_form"
+ *   field_ui_base_route = "entity.dependent_content_type.canonical"
  * )
  */
 class DependentContent extends ContentEntityBase implements DependentContentInterface {

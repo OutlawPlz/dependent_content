@@ -7,22 +7,28 @@
  *
  * Available variables:
  * - types: A list of dependent content types, each with the following properties:
- *   - add_link: Link to create a piece of content of this type.
- *   - description: Description of this type of content.
+ *   - label: Label of this type of dependent content.
+ *   - link: Link to create a piece of content of this type.
+ *   - url: Path to the add dependent content of this type page.
+ *   - description: Description of this type of dependent content.
  *
- * @see template_preprocess_node_add_list()
+ * @see template_preprocess_dependent_content_add_list()
  *
  * @ingroup themeable
  */
 #}
 
 {% if types is not empty %}
-  <dl>
+  <ul class="admin-list">
     {% for type in types %}
-      <dt>{{ type.add_link }}</dt>
-      <dd>{{ type.description }}</dd>
+      <li class="clearfix">
+        <a href="{{ type.url }}">
+          <span class="label">{{ type.label }}</span>
+          <div class="description">{{ type.description }}</div>
+        </a>
+      </li>
     {% endfor %}
-  </dl>
+  </ul>
 {% else %}
   <p>
     {% set create_content = path('entity.dependent_content_type.add_form') %}

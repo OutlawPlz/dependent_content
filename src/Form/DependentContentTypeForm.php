@@ -7,6 +7,7 @@
 namespace Drupal\dependent_content\Form;
 
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -30,29 +31,39 @@ class DependentContentTypeForm extends EntityForm  {
     $entity = $this->entity;
     $form = parent::form($form, $form_state);
 
-    $form['id'] = array(
-      '#type' => 'machine_name',
-      '#default_value' => $entity->id(),
-      '#machine_name' => array(
-        'exists' => '\Drupal\dependent_content\Entity\DependentContentType::load',
-      ),
-      '#disabled' => !$entity->isNew(),
-    );
-
     $form['label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
-      '#maxlength' => 255,
+      '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
       '#default_value' => $entity->label(),
-      '#description' => $this->t('Label for the dependent content type.'),
+      '#description' => $this->t('The human-readable name of this dependent content ' .
+        'type. This text will be displayed as part of the list on the <em>Add ' .
+        'dependent content</em> page. This name must be unique.'),
       '#required' => TRUE,
     );
+
+    $form['id'] = array(
+      '#type' => 'machine_name',
+      '#default_value' => $entity->id(),
+      '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
+      '#machine_name' => array(
+        'exists' => '\Drupal\dependent_content\Entity\DependentContentType::load',
+        'source' => array('label')
+      ),
+      '#disabled' => !$entity->isNew(),
+      '#description' => $this->t('A unique machine-readable name for this ' .
+        'dependent content type. It must only contain lowercase letters, ' .
+        'numbers, and underscores. This name will be used for constructing the ' .
+        'URL of the <em>Add dependent content</em>, in which underscores will ' .
+        'be converted into hyphens.')
+      );
 
     $form['description'] = array(
       '#type' => 'textarea',
       '#title' => $this->t('Description'),
       '#default_value' => $entity->getDescription(),
-      '#description' => $this->t('Enter a description for this dependent content type.'),
+      '#description' => $this->t('This text will be displayed on the <em>Add ' .
+        'dependent content</em> page'),
     );
 
     return $form;
