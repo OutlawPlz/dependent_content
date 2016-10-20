@@ -1,5 +1,5 @@
 name: Dependent Content
-description: Dependent Content is a custom entity representing all contents that aren't nodes or blocks, but depends on them to be displayed.
+description: Dependent Content is a custom entity representing contents which depend upon other entities to be displayed.
 type: module
 
 core: 8.x

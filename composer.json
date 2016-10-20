@@ -1,0 +1,14 @@
+{
+    "name": "outlawplz/dependent_content",
+    "description": "Dependent Content is a custom entity representing contents which depend upon other entities to be displayed.",
+    "type": "drupal-module",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Matteo Palazzo",
+            "email": "outlaw.plz@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
