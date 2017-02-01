@@ -8,6 +8,7 @@
 namespace Drupal\dependent_content;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -24,6 +25,7 @@ class DependentContentListBuilder extends EntityListBuilder {
 
   /**
    * DependentContentListBuilder constructor.
+   *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    * @param \Drupal\Core\Entity\EntityStorageInterface $storage
    * @param \Drupal\Core\Datetime\DateFormatInterface|\Drupal\Core\Datetime\DateFormatterInterface $date_formatter
@@ -47,6 +49,7 @@ class DependentContentListBuilder extends EntityListBuilder {
    *   The service container this object should use.
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type definition.
+   *
    * @return static
    *   A new instance of the entity handler.
    */
@@ -100,13 +103,15 @@ class DependentContentListBuilder extends EntityListBuilder {
   /**
    * Builds a row for an entity in the entity listing.
    *
-   * @param \Drupal\dependent_content\DependentContentInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity for this row of the list.
+   *
    * @return array
    *   A render array structure of fields for this entity.
    */
-  public function buildRow(DependentContentInterface $entity) {
+  public function buildRow(EntityInterface $entity) {
 
+    /** @var DependentContentInterface $entity */
     $row['label'] = $entity->label();
     $row['type'] = $entity->bundle();
     $row['author']['data'] = array(
