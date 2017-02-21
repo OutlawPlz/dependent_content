@@ -8,6 +8,7 @@ namespace Drupal\dependent_content;
 
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityAccessControlHandler;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 
 class DependentContentAccessControlHandler extends EntityAccessControlHandler {
@@ -18,7 +19,8 @@ class DependentContentAccessControlHandler extends EntityAccessControlHandler {
    * This method is supposed to be overwritten by extending classes that
    * do their own custom access checking.
    *
-   * @param \Drupal\dependent_content\DependentContentInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity for which to check access.
    * @param string $operation
    *   The entity operation. Usually one of 'view', 'view label', 'update' or
    *   'delete'.
@@ -27,8 +29,9 @@ class DependentContentAccessControlHandler extends EntityAccessControlHandler {
    * @return \Drupal\Core\Access\AccessResultInterface The access result.
    * The access result.
    */
-  protected function checkAccess(DependentContentInterface $entity, $operation, AccountInterface $account) {
+  protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
 
+    /** @var \Drupal\dependent_content\DependentContentInterface $entity */
     $unpublished = !$entity->isPublished();
 
     switch ($operation) {
@@ -37,7 +40,7 @@ class DependentContentAccessControlHandler extends EntityAccessControlHandler {
         if ($unpublished) {
           return AccessResult::allowedIfHasPermission($account, 'view unpublished dependent content');
         }
-        return AccessResult::allowedIfHasPermission($account, 'view dependent content');
+        return AccessResult::allowedIfHasPermission($account, 'access dependent content');
         break;
 
       case 'update':

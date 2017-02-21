@@ -8,7 +8,7 @@ administer dependent content:
   description: 'Create, edit and delete dependent content.'
 
 access dependent content:
-  title: 'View published depedent content'
+  title: 'View published dependent content'
 
 view unpublished dependent content:
   title: 'View unpublished dependent content'
