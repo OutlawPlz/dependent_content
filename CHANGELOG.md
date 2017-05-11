@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [v0.1.1]
+## v0.1.2
+
+- Improved dependent-content.html.twig and preprocess function.
+
+## v0.1.1
 
 - Fixed access dependent content permission bug. Fixed declaration 
 incompatibility.

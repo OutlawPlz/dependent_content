@@ -18,7 +18,8 @@ use Drupal\Core\Url;
  */
 function template_preprocess_dependent_content(&$variables) {
 
-  // kint($variables); kint($variables['elements']);
+  $variables['dependent_content'] = $variables['elements']['#dependent_content'];
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
 
   foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
