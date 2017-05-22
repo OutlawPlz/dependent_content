@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - dependent_content
+id: dependent_content_publish_action
+label: 'Publish dependent content'
+type: dependent_content
+plugin: dependent_content_publish_action
+configuration: {  }

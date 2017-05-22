@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - dependent_content
+id: dependent_content_unpublish_action
+label: 'Unpublish dependent content'
+type: dependent_content
+plugin: dependent_content_unpublish_action
+configuration: {  }

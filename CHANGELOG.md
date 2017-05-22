@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 - Improved dependent-content.html.twig and preprocess function.
 
+- Added bulk operations publish and unpublish.
+
 ## v0.1.1
 
 - Fixed access dependent content permission bug. Fixed declaration 

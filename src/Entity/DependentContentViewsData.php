@@ -34,6 +34,14 @@ class DependentContentViewsData extends EntityViewsData implements EntityViewsDa
       )
     );
 
+    $data['dependent_content']['dependent_content_bulk_form'] = array(
+      'title' => $this->t('Bulk update'),
+      'help' => $this->t('Add a form element that lets you run operations on multiple dependent contents.'),
+      'field' => array(
+        'id' => 'dependent_content_bulk_form'
+      )
+    );
+
     return $data;
   }
 }
