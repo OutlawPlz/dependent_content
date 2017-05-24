@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 - Added bulk operations publish and unpublish.
 
+- Added bulk operations delete with confirmation form.
+
 ## v0.1.1
 
 - Fixed access dependent content permission bug. Fixed declaration 

@@ -38,6 +38,15 @@ entity.dependent_content.delete_form:
   requirements:
     _entity_access: 'dependent_content.delete'
 
+entity.dependent_content.multiple_delete_form:
+  path: '/admin/content/dependent-content/delete'
+  defaults:
+    _form: '\Drupal\dependent_content\Form\DependentContentMultipleDeleteForm'
+  options:
+    _admin_route: TRUE
+  requirements:
+    _permission: 'administer dependent content'
+
 entity.dependent_content.add_page:
   path: '/dependent-content/add'
   defaults:
