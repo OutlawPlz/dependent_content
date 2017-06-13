@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 
 - Added bulk operations delete with confirmation form.
 
+- Added readme.
+
+- ...
+
 ## v0.1.1
 
 - Fixed access dependent content permission bug. Fixed declaration 
