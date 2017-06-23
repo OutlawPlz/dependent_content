@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 
 - Added readme.
 
-- ...
+- Added basic_dependent_content type.
 
 ## v0.1.1
 

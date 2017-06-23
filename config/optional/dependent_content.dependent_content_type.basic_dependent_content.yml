@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: basic_dependent_content
+label: 'Basic dependent content'
+description: 'A basic dependent content contains a title and a body.'
