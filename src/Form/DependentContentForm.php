@@ -44,28 +44,9 @@ class DependentContentForm extends ContentEntityForm {
       '#optional' => TRUE,
     );
 
-    if (isset($form['uid'])) {
-      $form['uid']['#group'] = 'author';
-    }
-
-    if (isset($form['created'])) {
-      $form['created']['#group'] = 'author';
-    }
-
-    $form['publishing_options'] = array(
-      '#type' => 'details',
-      '#title' => t('Publishing options'),
-      '#group' => 'advanced',
-      '#attributes' => array(
-        'class' => array('dependent-content-form-publishing-options'),
-      ),
-      '#weight' => 51,
-      '#optional' => TRUE,
-    );
-
-    if (isset($form['published'])) {
-      $form['published']['#group'] = 'publishing_options';
-    }
+    $form['uid']['#group'] = 'author';
+    $form['created']['#group'] = 'author';
+    $form['revision_log_message']['#group'] = 'revision_information';
 
     return $form;
   }
@@ -88,6 +69,55 @@ class DependentContentForm extends ContentEntityForm {
   }
 
   /**
+   * Returns an array of supported actions for the current entity form.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   * @return array
+   *   An array of supported actions.
+   */
+  protected function actions(array $form, FormStateInterface $form_state) {
+
+    $actions = parent::actions($form, $form_state);
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $entity */
+    $entity = $this->entity;
+
+    $actions['publish'] = $actions['submit'];
+    $actions['publish']['#publish'] = TRUE;
+    $actions['publish']['#dropbutton'] = 'publishing_options';
+    $element['publish']['#weight'] = 0;
+
+    if ($entity->isNew()) {
+      $actions['publish']['#value'] = t('Save and publish');
+    }
+    else {
+      $actions['publish']['#value'] = $entity->isPublished() ? t('Save and keep published') : t('Save and publish');
+    }
+
+    $actions['unpublish'] = $actions['submit'];
+    $actions['unpublish']['#publish'] = FALSE;
+    $actions['unpublish']['#dropbutton'] = 'publishing_options';
+    $element['unpublish']['#weight'] = 10;
+
+    if ($entity->isNew()) {
+      $actions['unpublish']['#value'] = t('Save as unpublished');
+    }
+    else {
+      $actions['unpublish']['#value'] = !$entity->isPublished() ? t('Save and keep unpublished') : t('Save and unpublish');
+    }
+
+    if (!$entity->isPublished()) {
+      $actions['unpublish']['#weight'] = -10;
+    }
+
+    $actions['submit']['#access'] = FALSE;
+
+    return $actions;
+  }
+
+  /**
    * Form submission handler for the 'save' action.
    *
    * @param array $form
@@ -99,8 +129,14 @@ class DependentContentForm extends ContentEntityForm {
    */
   public function save(array $form, FormStateInterface $form_state) {
 
-    /** @var $entity \Drupal\dependent_content\Entity\DependentContent */
+    /** @var $entity \Drupal\dependent_content\Entity\DependentContentInterface */
     $entity = $this->entity;
+    $action = $form_state->getTriggeringElement();
+
+    if (isset($action['#publish'])) {
+      $action['#publish'] ? $entity->setPublished() : $entity->setUnpublished();
+    }
+
     $status = parent::save($form, $form_state);
     $label = array(
       '%label' => $entity->label()
@@ -110,7 +146,7 @@ class DependentContentForm extends ContentEntityForm {
       drupal_set_message($this->t('Created the %label dependent content.', $label));
     }
     elseif ($status == SAVED_UPDATED) {
-      drupal_set_message($this->t('Saved the %label dependent content.'), $label);
+      drupal_set_message($this->t('Saved the %label dependent content.', $label));
     }
 
     $form_state->setRedirect('entity.dependent_content.collection');

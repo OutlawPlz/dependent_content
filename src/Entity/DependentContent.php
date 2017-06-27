@@ -7,6 +7,7 @@
 namespace Drupal\dependent_content\Entity;
 
 use Drupal\Core\Entity\EntityPublishedTrait;
+use Drupal\Core\Entity\RevisionLogEntityTrait;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
@@ -21,13 +22,16 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Dependent content"),
  *   bundle_label = @Translation("Dependent content type"),
  *   base_table = "dependent_content",
+ *   revision_table = "dependent_content_revision",
  *   fieldable = TRUE,
  *   translatable = TRUE,
+ *   show_revision_ui = TRUE,
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
  *     "bundle" = "type",
  *     "langcode" = "langcode",
+ *     "revision" = "vid",
  *     "published" = "published",
  *     "uid" = "uid",
  *     "uuid" = "uuid"
@@ -49,6 +53,8 @@ use Drupal\user\UserInterface;
  *     "add-form" = "/dependent-content/add/{dependent_content_type}",
  *     "edit-form" = "/dependent-content/{dependent_content}/edit",
  *     "delete-form" = "/dependent-content/{dependent_content}/delete",
+ *     "version-history" = "/dependent-content/{dependent_content}/revisions",
+ *     "revision" = "/dependent-content/{dependent_content}/revisions/{dependent_content_revision}",
  *     "collection" = "/admin/content/dependent-content"
  *   },
  *   bundle_entity_type = "dependent_content_type",
@@ -59,6 +65,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
 
   use EntityChangedTrait;
   use EntityPublishedTrait;
+  use RevisionLogEntityTrait;
 
   /**
    * Gets the dependent content type.
@@ -182,6 +189,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
 
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields += static::publishedBaseFieldDefinitions($entity_type);
+    $fields += static::revisionLogBaseFieldDefinitions($entity_type);
 
     $fields['label'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Content description'))
@@ -202,17 +210,18 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
       ))
       ->setRequired(TRUE)
       ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE)
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the dependent content entity.'))
-      ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
       ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE)
       ->setDisplayOptions('view', array(
         'label' => 'hidden',
         'type' => 'author',
@@ -235,6 +244,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the entity was created.'))
       ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE)
       ->setDisplayOptions('form', array(
         'type' => 'datetime_timestamp',
         'weight' => 10,
@@ -244,14 +254,8 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
       ->setDescription(t('The time that the entity was last edited.'))
-      ->setTranslatable(TRUE);
-
-    // Created by static::publishedBaseFieldDefinitions($entity_type). Add
-    // display options.
-    $fields['published']->setDisplayOptions('form', array(
-      'type' => 'checkbox',
-      'weight' => 10
-    ));
+      ->setTranslatable(TRUE)
+      ->setRevisionable(TRUE);
 
     return $fields;
   }

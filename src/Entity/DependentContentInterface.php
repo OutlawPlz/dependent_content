@@ -9,12 +9,13 @@ namespace Drupal\dependent_content\Entity;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\user\EntityOwnerInterface;
 
 /**
  * Provides an interface defining a dependent content entity.
  */
-interface DependentContentInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface, EntityPublishedInterface {
+interface DependentContentInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface, EntityPublishedInterface, RevisionLogInterface {
 
   /**
    * Denotes that the dependent content is not published.

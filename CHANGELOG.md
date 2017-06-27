@@ -4,10 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## v0.2.0
 
-*Attention* - This release breaks compatibility with previous releases. Since 
+**Attention** - This release breaks compatibility with previous releases. Since 
 we're in early development, no upgrade path is provided.
 
 - Use EntityChangedTrait and EntityPublishedTrait. Translatable entity.
+
+- Implemented revisions without UI. Added publishing actions. Fixed route path.
 
 ## v0.1.2
 
