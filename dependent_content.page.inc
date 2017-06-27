@@ -45,7 +45,7 @@ function template_preprocess_dependent_content_add_list(&$variables) {
         'link' => Link::createFromRoute($type->label(), 'entity.dependent_content.add_form', ['dependent_content_type' => $type->id()]),
         'url' => Url::fromRoute('entity.dependent_content.add_form', ['dependent_content_type' => $type->id()]),
         'description' => array(
-          '#markup' => $type->getDescription()
+          '#markup' => $type->get('description')
         )
       );
     }

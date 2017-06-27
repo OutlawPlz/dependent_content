@@ -111,7 +111,7 @@ class DependentContentListBuilder extends EntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
 
-    /** @var DependentContentInterface $entity */
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $entity */
     $row['label'] = $entity->label();
     $row['type'] = $entity->bundle();
     $row['author']['data'] = array(

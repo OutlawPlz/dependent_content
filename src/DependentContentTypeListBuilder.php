@@ -28,15 +28,20 @@ class DependentContentTypeListBuilder extends EntityListBuilder {
   /**
    * Builds a row for an entity in the entity listing.
    *
-   * @param \Drupal\dependent_content\DependentContentTypeInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity for this row of the list.
+   *
    * @return array
    *   A render array structure of fields for this entity.
+   *
+   * @see \Drupal\Core\Entity\EntityListBuilder::render()
    */
-  public function buildRow(DependentContentTypeInterface $entity) {
+  public function buildRow(EntityInterface $entity) {
+
+    /** @var \Drupal\dependent_content\Entity\DependentContentTypeInterface $entity */
 
     $row['label'] = $entity->label();
-    $row['description'] = $entity->getDescription();
+    $row['description'] = $entity->get('description');
 
     return $row + parent::buildRow($entity);
   }

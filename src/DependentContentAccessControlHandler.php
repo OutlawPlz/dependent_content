@@ -31,7 +31,7 @@ class DependentContentAccessControlHandler extends EntityAccessControlHandler {
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
 
-    /** @var \Drupal\dependent_content\DependentContentInterface $entity */
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $entity */
     $unpublished = !$entity->isPublished();
 
     switch ($operation) {

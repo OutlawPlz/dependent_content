@@ -10,7 +10,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Url;
-use Drupal\dependent_content\DependentContentTypeInterface;
+use Drupal\dependent_content\Entity\DependentContentTypeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DependentContentController extends ControllerBase {
@@ -90,7 +90,7 @@ class DependentContentController extends ControllerBase {
   /**
    * Presents the dependent content creation form of given bundle/type.
    *
-   * @param \Drupal\dependent_content\DependentContentTypeInterface $dependent_content_type
+   * @param \Drupal\dependent_content\Entity\DependentContentTypeInterface $dependent_content_type
    * @return array
    */
   public function addForm(DependentContentTypeInterface $dependent_content_type) {

@@ -6,11 +6,11 @@
 
 namespace Drupal\dependent_content\Entity;
 
+use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\dependent_content\DependentContentInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -22,12 +22,13 @@ use Drupal\user\UserInterface;
  *   bundle_label = @Translation("Dependent content type"),
  *   base_table = "dependent_content",
  *   fieldable = TRUE,
+ *   translatable = TRUE,
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
  *     "bundle" = "type",
  *     "langcode" = "langcode",
- *     "status" = "status",
+ *     "published" = "published",
  *     "uid" = "uid",
  *     "uuid" = "uuid"
  *   },
@@ -57,6 +58,7 @@ use Drupal\user\UserInterface;
 class DependentContent extends ContentEntityBase implements DependentContentInterface {
 
   use EntityChangedTrait;
+  use EntityPublishedTrait;
 
   /**
    * Gets the dependent content type.
@@ -65,6 +67,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    *   The dependent content type.
    */
   public function getType() {
+
     return $this->bundle();
   }
 
@@ -75,6 +78,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    *   The dependent content label.
    */
   public function getLabel() {
+
     return $this->get('label')->value;
   }
 
@@ -83,10 +87,11 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    *
    * @param string $label
    *   The dependent content label.
-   * @return \Drupal\dependent_content\DependentContentInterface
+   * @return \Drupal\dependent_content\Entity\DependentContentInterface
    *   The called dependent content entity.
    */
   public function setLabel($label) {
+
     return $this->set('label', $label);
   }
 
@@ -97,6 +102,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    *   Creation timestamp of the dependent content.
    */
   public function getCreatedTime() {
+
     return $this->get('created')->value;
   }
 
@@ -105,36 +111,12 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    *
    * @param int $timestamp
    *   The dependent content creation timestamp.
-   * @return \Drupal\dependent_content\DependentContentInterface
+   * @return \Drupal\dependent_content\Entity\DependentContentInterface
    *   The called dependent content entity.
    */
   public function setCreatedTime($timestamp) {
+
     return $this->set('created', $timestamp);
-  }
-
-  /**
-   * Returns the dependent content published status indicator.
-   *
-   * Unpublished dependent content are only visible to restricted users.
-   *
-   * @return bool
-   *   TRUE if the dependent content is published.
-   */
-  public function isPublished() {
-    return (bool) $this->getEntityKey('status');
-  }
-
-  /**
-   * Sets the published status of a dependent content.
-   *
-   * @param bool $published
-   *   TRUE to set this dependent content to published, FALSE to set it to unpublished.
-   *
-   * @return \Drupal\dependent_content\DependentContentInterface
-   *   The called dependent content entity.
-   */
-  public function setPublished($published) {
-    return $this->set('status', $published ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
   }
 
   /**
@@ -144,6 +126,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    *   The owner user entity.
    */
   public function getOwner() {
+
     return $this->get('uid')->entity;
   }
 
@@ -156,6 +139,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    * @return $this
    */
   public function setOwner(UserInterface $account) {
+
     return $this->set('uid', $account->id());
   }
 
@@ -167,6 +151,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    *   the entity.
    */
   public function getOwnerId() {
+
     return $this->get('uid')->target_id;
   }
 
@@ -179,6 +164,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    * @return $this
    */
   public function setOwnerId($uid) {
+
     return $this->set('uid', $uid);
   }
 
@@ -194,10 +180,8 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
 
-    $fields['id'] = BaseFieldDefinition::create('integer')
-      ->setLabel('ID')
-      ->setDescription(t('The ID of the dependent content entity.'))
-      ->setReadOnly(TRUE);
+    $fields = parent::baseFieldDefinitions($entity_type);
+    $fields += static::publishedBaseFieldDefinitions($entity_type);
 
     $fields['label'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Content description'))
@@ -217,19 +201,9 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
         'weight' => -4,
       ))
       ->setRequired(TRUE)
+      ->setTranslatable(TRUE)
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
-
-    $fields['type'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Type'))
-      ->setDescription(t('The Dependent content type/bundle.'))
-      ->setSetting('target_type', 'dependent_content_type')
-      ->setRequired(TRUE);
-
-    $fields['uuid'] = BaseFieldDefinition::create('uuid')
-      ->setLabel(t('UUID'))
-      ->setDescription(t('The UUID of the dependent content entity.'))
-      ->setReadOnly(TRUE);
 
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
@@ -257,30 +231,10 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
-    $fields['status'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Publishing status'))
-      ->setDescription(t('A boolean indicating whether the dependent content is published.'))
-      ->setDisplayOptions('form', array(
-        'type' => 'boolean_checkbox',
-        'settings' => array(
-          'display_label' => TRUE,
-        ),
-      ))
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDefaultValue(TRUE);
-
-    $fields['langcode'] = BaseFieldDefinition::create('language')
-      ->setLabel(t('Language code'))
-      ->setDescription(t('The language code for the Dependent content entity.'))
-      ->setDisplayOptions('form', array(
-        'type' => 'language_select',
-        'weight' => 10,
-      ))
-      ->setDisplayConfigurable('form', TRUE);
-
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the entity was created.'))
+      ->setTranslatable(TRUE)
       ->setDisplayOptions('form', array(
         'type' => 'datetime_timestamp',
         'weight' => 10,
@@ -289,7 +243,15 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
 
     $fields['changed'] = BaseFieldDefinition::create('changed')
       ->setLabel(t('Changed'))
-      ->setDescription(t('The time that the entity was last edited.'));
+      ->setDescription(t('The time that the entity was last edited.'))
+      ->setTranslatable(TRUE);
+
+    // Created by static::publishedBaseFieldDefinitions($entity_type). Add
+    // display options.
+    $fields['published']->setDisplayOptions('form', array(
+      'type' => 'checkbox',
+      'weight' => 10
+    ));
 
     return $fields;
   }

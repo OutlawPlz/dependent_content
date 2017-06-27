@@ -9,6 +9,7 @@ namespace Drupal\dependent_content\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\language\Entity\ContentLanguageSettings;
 
 /**
  * Form handler for the dependent content type edit forms.
@@ -36,9 +37,7 @@ class DependentContentTypeForm extends EntityForm  {
       '#title' => $this->t('Label'),
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
       '#default_value' => $entity->label(),
-      '#description' => $this->t('The human-readable name of this dependent content ' .
-        'type. This text will be displayed as part of the list on the <em>Add ' .
-        'dependent content</em> page. This name must be unique.'),
+      '#description' => $this->t('The human-readable name of this dependent content type. This text will be displayed as part of the list on the <em>Add dependent content</em> page. This name must be unique.'),
       '#required' => TRUE,
     );
 
@@ -51,20 +50,38 @@ class DependentContentTypeForm extends EntityForm  {
         'source' => array('label')
       ),
       '#disabled' => !$entity->isNew(),
-      '#description' => $this->t('A unique machine-readable name for this ' .
-        'dependent content type. It must only contain lowercase letters, ' .
-        'numbers, and underscores. This name will be used for constructing the ' .
-        'URL of the <em>Add dependent content</em>, in which underscores will ' .
-        'be converted into hyphens.')
+      '#description' => $this->t('A unique machine-readable name for this dependent content type. It must only contain lowercase letters, numbers, and underscores. This name will be used for constructing the URL of the <em>Add dependent content</em>, in which underscores will be converted into hyphens.')
       );
 
     $form['description'] = array(
       '#type' => 'textarea',
       '#title' => $this->t('Description'),
-      '#default_value' => $entity->getDescription(),
-      '#description' => $this->t('This text will be displayed on the <em>Add ' .
-        'dependent content</em> page'),
+      '#default_value' => $entity->get('description'),
+      '#description' => $this->t('This text will be displayed on the <em>Add dependent content</em> page'),
     );
+
+    $form['additional_settings'] = array(
+      '#type' => 'vertical_tabs'
+    );
+
+    if ($this->moduleHandler->moduleExists('language')) {
+
+      $form['language'] = array(
+        '#type' => 'details',
+        '#title' => t('Language settings'),
+        '#group' => 'additional_settings'
+      );
+
+      $form['language']['language_configuration'] = array(
+        '#type' => 'language_configuration',
+        '#group' => 'language',
+        '#entity_information' => array(
+          'entity_type' => 'dependent_content',
+          'bundle' => $this->entity->id(),
+        ),
+        '#default_value' => ContentLanguageSettings::loadByEntityTypeBundle('dependent_content', $this->entity->id())
+      );
+    }
 
     return $form;
   }

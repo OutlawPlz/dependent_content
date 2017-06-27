@@ -52,19 +52,19 @@ class DependentContentForm extends ContentEntityForm {
       $form['created']['#group'] = 'author';
     }
 
-    $form['publish'] = array(
+    $form['publishing_options'] = array(
       '#type' => 'details',
       '#title' => t('Publishing options'),
       '#group' => 'advanced',
       '#attributes' => array(
-        'class' => array('dependent-content-form-publish'),
+        'class' => array('dependent-content-form-publishing-options'),
       ),
       '#weight' => 51,
       '#optional' => TRUE,
     );
 
-    if (isset($form['status'])) {
-      $form['status']['#group'] = 'publish';
+    if (isset($form['published'])) {
+      $form['published']['#group'] = 'publishing_options';
     }
 
     return $form;

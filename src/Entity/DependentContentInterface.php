@@ -4,16 +4,27 @@
  * Contains \Drupal\dependent_content\DependentContentInterface
  */
 
-namespace Drupal\dependent_content;
+namespace Drupal\dependent_content\Entity;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
+use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\user\EntityOwnerInterface;
 
 /**
  * Provides an interface defining a dependent content entity.
  */
-interface DependentContentInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface   {
+interface DependentContentInterface extends ContentEntityInterface, EntityOwnerInterface, EntityChangedInterface, EntityPublishedInterface {
+
+  /**
+   * Denotes that the dependent content is not published.
+   */
+  const NOT_PUBLISHED = 0;
+
+  /**
+   * Denotes that the dependent content is published.
+   */
+  const PUBLISHED = 1;
 
   /**
    * Gets the dependent content type.
@@ -36,7 +47,7 @@ interface DependentContentInterface extends ContentEntityInterface, EntityOwnerI
    *
    * @param string $label
    *   The dependent content label.
-   * @return \Drupal\dependent_content\DependentContentInterface
+   * @return \Drupal\dependent_content\Entity\DependentContentInterface
    *   The called dependent content entity.
    */
   public function setLabel($label);
@@ -54,29 +65,8 @@ interface DependentContentInterface extends ContentEntityInterface, EntityOwnerI
    *
    * @param int $timestamp
    *   The dependent content creation timestamp.
-   * @return \Drupal\dependent_content\DependentContentInterface
+   * @return \Drupal\dependent_content\Entity\DependentContentInterface
    *   The called dependent content entity.
    */
   public function setCreatedTime($timestamp);
-
-  /**
-   * Returns the dependent content published status indicator.
-   *
-   * Unpublished dependent content are only visible to restricted users.
-   *
-   * @return bool
-   *   TRUE if the dependent content is published.
-   */
-  public function isPublished();
-
-  /**
-   * Sets the published status of a dependent content.
-   *
-   * @param bool $published
-   *   TRUE to set this dependent content to published, FALSE to set it to unpublished.
-   *
-   * @return \Drupal\dependent_content\DependentContentInterface
-   *   The called dependent content entity.
-   */
-  public function setPublished($published);
 }

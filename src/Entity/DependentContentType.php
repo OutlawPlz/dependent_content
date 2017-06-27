@@ -7,7 +7,7 @@
 namespace Drupal\dependent_content\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
-use Drupal\dependent_content\DependentContentTypeInterface;
+
 
 /**
  * Defines the dependent content type configuration entity.
@@ -67,14 +67,4 @@ class DependentContentType extends ConfigEntityBundleBase implements DependentCo
    * @var string
    */
   protected $description;
-
-  /**
-   * Gets the description.
-   *
-   * @return string
-   *   The description of this node type.
-   */
-  public function getDescription() {
-    return $this->description;
-  }
 }

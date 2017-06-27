@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.2.0
+
+*Attention* - This release breaks compatibility with previous releases. Since 
+we're in early development, no upgrade path is provided.
+
+- Use EntityChangedTrait and EntityPublishedTrait. Translatable entity.
+
 ## v0.1.2
 
 - Improved dependent-content.html.twig and preprocess function.
@@ -10,7 +17,7 @@ All notable changes to this project will be documented in this file.
 
 - Added bulk operations delete with confirmation form.
 
-- Added readme.
+- Added README.
 
 - Added basic_dependent_content type.
 
