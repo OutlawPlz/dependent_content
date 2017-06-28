@@ -19,7 +19,7 @@ entity.dependent_content.add_form:
     _entity_create_access: 'dependent_content:{dependent_content_type}'
 
 entity.dependent_content.edit_form:
-  path: '/dependent-content/{dependent_content}/edit'
+  path: '/dependent-content/{dependent_content}'
   defaults:
     _entity_form: 'dependent_content.edit'
     _title: 'Edit dependent content'

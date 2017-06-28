@@ -1,23 +1,23 @@
 # Local task a.k.a. Horizontal tabs
 # <module_name>.task.<route_name> - Route name refers to dependent_content.routing.yml
 
-dependent_content.task.canonical:
+entity.dependent_content.canonical:
   route_name: entity.dependent_content.canonical
   base_route: entity.dependent_content.canonical
   title: Edit
 
-dependent_content.task.delete_form:
+entity.dependent_content.delete_form:
   route_name:  entity.dependent_content.delete_form
   base_route:  entity.dependent_content.canonical
   title: Delete
   weight: 10
 
-dependent_content.task.collection:
+entity.dependent_content.collection:
   title: 'Dependent content'
   route_name: entity.dependent_content.collection
   base_route: system.admin_content
 
-dependent_content_type.task.edit_form:
+entity.dependent_content_type.edit_form:
   route_name: entity.dependent_content_type.edit_form
   base_route: entity.dependent_content_type.canonical
   title: Edit

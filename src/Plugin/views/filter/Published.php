@@ -12,9 +12,9 @@ use Drupal\views\Plugin\views\filter\FilterPluginBase;
 /**
  * Filter by published status.
  *
- * @ViewsFilter("dependent_content_status")
+ * @ViewsFilter("dependent_content_published_admin")
  */
-class Status extends FilterPluginBase {
+class Published extends FilterPluginBase {
 
   /**
    * Display the filter on the administrative summary
@@ -60,7 +60,7 @@ class Status extends FilterPluginBase {
     $query = $this->query;
     $table = $this->ensureMyTable();
 
-    $query->addWhereExpression($this->options['group'], "$table.status = 1 OR (***CURRENT_USER*** <> 0 AND ***VIEW_UNPUBLISHED_DEPENDENT_CONTENT*** = 1)");
+    $query->addWhereExpression($this->options['group'], "$table.published = 1 OR (***CURRENT_USER*** <> 0 AND ***VIEW_UNPUBLISHED_DEPENDENT_CONTENT*** = 1)");
   }
 
   /**

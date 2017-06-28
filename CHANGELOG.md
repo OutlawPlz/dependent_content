@@ -11,6 +11,9 @@ we're in early development, no upgrade path is provided.
 
 - Implemented revisions without UI. Added publishing actions. Fixed route path.
 
+- Updated basic dependent content. Improved dependent content view. Fixed edit
+path and local tasks. Removed view filter status. Added view filter published. 
+
 ## v0.1.2
 
 - Improved dependent-content.html.twig and preprocess function.

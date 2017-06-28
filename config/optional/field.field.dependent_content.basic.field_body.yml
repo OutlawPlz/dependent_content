@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - dependent_content.dependent_content_type.basic_dependent_content
+    - dependent_content.dependent_content_type.basic
     - field.storage.dependent_content.field_body
   module:
     - text
-id: dependent_content.basic_dependent_content.field_body
+id: dependent_content.basic.field_body
 field_name: field_body
 entity_type: dependent_content
-bundle: basic_dependent_content
+bundle: basic
 label: Body
 description: ''
 required: false

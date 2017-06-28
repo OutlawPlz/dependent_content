@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - dependent_content.dependent_content_type.basic_dependent_content
-    - field.field.dependent_content.basic_dependent_content.field_body
+    - dependent_content.dependent_content_type.basic
+    - field.field.dependent_content.basic.field_body
   module:
     - text
     - user
-id: dependent_content.basic_dependent_content.default
+id: dependent_content.basic.default
 targetEntityType: dependent_content
-bundle: basic_dependent_content
+bundle: basic
 mode: default
 content:
   field_body:

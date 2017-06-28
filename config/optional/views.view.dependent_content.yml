@@ -6,10 +6,10 @@ dependencies:
     - user
 id: dependent_content
 label: 'Dependent content'
-module: dependent_content
+module: views
 description: 'Find and manage dependent content.'
-tag: 'dependent content'
-base_table: dependent_content
+tag: ''
+base_table: dependent_content_field_data
 base_field: id
 core: 8.x
 display:
@@ -69,18 +69,24 @@ display:
           row_class: ''
           default_row_class: true
           override: true
-          sticky: true
+          sticky: false
           caption: ''
           summary: ''
           description: ''
           columns:
+            dependent_content_bulk_form: dependent_content_bulk_form
             label: label
             type: type
             name: name
-            status: status
+            published: published
             changed: changed
             operations: operations
           info:
+            dependent_content_bulk_form:
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
             label:
               sortable: true
               default_sort_order: asc
@@ -94,7 +100,7 @@ display:
               align: ''
               separator: ''
               empty_column: false
-              responsive: ''
+              responsive: priority-low
             name:
               sortable: false
               default_sort_order: asc
@@ -102,23 +108,21 @@ display:
               separator: ''
               empty_column: false
               responsive: priority-low
-            status:
+            published:
               sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
-              responsive: ''
+              responsive: priority-medium
             changed:
               sortable: true
-              default_sort_order: desc
+              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
-              responsive: priority-low
+              responsive: priority-medium
             operations:
-              sortable: false
-              default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
@@ -128,10 +132,66 @@ display:
       row:
         type: fields
       fields:
-        label:
-          id: label
+        dependent_content_bulk_form:
+          id: dependent_content_bulk_form
           table: dependent_content
+          field: dependent_content_bulk_form
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Bulk update'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          action_title: Action
+          include_exclude: exclude
+          selected_actions: {  }
+          entity_type: dependent_content
+          plugin_id: dependent_content_bulk_form
+        label:
+          table: dependent_content_field_data
           field: label
+          id: label
+          entity_type: null
+          entity_field: label
+          plugin_id: field
           relationship: none
           group_type: group
           admin_label: ''
@@ -178,8 +238,7 @@ display:
           hide_alter_empty: true
           click_sort_column: value
           type: string
-          settings:
-            link_to_entity: true
+          settings: {  }
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -190,12 +249,9 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: dependent_content
-          entity_field: label
-          plugin_id: field
         type:
           id: type
-          table: dependent_content
+          table: dependent_content_field_data
           field: type
           relationship: none
           group_type: group
@@ -265,7 +321,7 @@ display:
           relationship: uid
           group_type: group
           admin_label: ''
-          label: Name
+          label: Author
           exclude: false
           alter:
             alter_text: false
@@ -323,14 +379,14 @@ display:
           entity_type: user
           entity_field: name
           plugin_id: field
-        status:
-          id: status
-          table: dependent_content
-          field: status
+        published:
+          id: published
+          table: dependent_content_field_data
+          field: published
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Publishing status'
+          label: Status
           exclude: false
           alter:
             alter_text: false
@@ -388,16 +444,16 @@ display:
           separator: ', '
           field_api_classes: false
           entity_type: dependent_content
-          entity_field: status
+          entity_field: published
           plugin_id: field
         changed:
           id: changed
-          table: dependent_content
+          table: dependent_content_field_data
           field: changed
           relationship: none
           group_type: group
           admin_label: ''
-          label: Updates
+          label: Updated
           exclude: false
           alter:
             alter_text: false
@@ -458,16 +514,13 @@ display:
           entity_field: changed
           plugin_id: field
         operations:
+          id: operations
           table: dependent_content
           field: operations
-          id: operations
-          entity_type: null
-          entity_field: null
-          plugin_id: entity_operations
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Operations links'
+          label: Operations
           exclude: false
           alter:
             alter_text: false
@@ -509,30 +562,34 @@ display:
           empty_zero: false
           hide_alter_empty: true
           destination: true
+          entity_type: dependent_content
+          plugin_id: entity_operations
       filters:
-        status_extra:
-          id: status_extra
-          table: dependent_content
-          field: status_extra
+        label:
+          id: label
+          table: dependent_content_field_data
+          field: label
           relationship: none
           group_type: group
           admin_label: ''
-          operator: '='
+          operator: contains
           value: ''
           group: 1
-          exposed: false
+          exposed: true
           expose:
-            operator_id: ''
-            label: ''
+            operator_id: label_op
+            label: 'Content description'
             description: ''
             use_operator: false
-            operator: ''
-            identifier: ''
+            operator: label_op
+            identifier: label
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
           is_grouped: false
           group_info:
             label: ''
@@ -546,56 +603,11 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           entity_type: dependent_content
-          plugin_id: dependent_content_status
-        status:
-          id: status
-          table: dependent_content
-          field: status
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: false
-          group: 1
-          exposed: true
-          expose:
-            operator_id: ''
-            label: 'Publishing status'
-            description: null
-            use_operator: false
-            operator: status_op
-            identifier: status
-            required: true
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: true
-          group_info:
-            label: 'Publishing status'
-            description: ''
-            identifier: status
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items:
-              1:
-                title: Published
-                operator: '='
-                value: '1'
-              2:
-                title: Unpublished
-                operator: '='
-                value: '0'
-          entity_type: dependent_content
-          entity_field: status
-          plugin_id: boolean
+          entity_field: label
+          plugin_id: string
         type:
           id: type
-          table: dependent_content
+          table: dependent_content_field_data
           field: type
           relationship: none
           group_type: group
@@ -634,24 +646,24 @@ display:
           entity_type: dependent_content
           entity_field: type
           plugin_id: bundle
-        label:
-          id: label
-          table: dependent_content
-          field: label
+        published:
+          id: published
+          table: dependent_content_field_data
+          field: published
           relationship: none
           group_type: group
           admin_label: ''
-          operator: contains
+          operator: '='
           value: ''
           group: 1
           exposed: true
           expose:
-            operator_id: label_op
-            label: 'Content description'
+            operator_id: ''
+            label: 'Publishing status'
             description: ''
             use_operator: false
-            operator: label_op
-            identifier: label
+            operator: published_op
+            identifier: published
             required: false
             remember: false
             multiple: false
@@ -659,6 +671,55 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
+          is_grouped: true
+          group_info:
+            label: 'Publishing status'
+            description: ''
+            identifier: published
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: Published
+                operator: '='
+                value: '1'
+              2:
+                title: Unpublished
+                operator: '='
+                value: '0'
+          entity_type: dependent_content
+          entity_field: published
+          plugin_id: boolean
+        langcode:
+          id: langcode
+          table: dependent_content_field_data
+          field: langcode
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: in
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: langcode_op
+            label: Language
+            description: ''
+            use_operator: false
+            operator: langcode_op
+            identifier: langcode
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+            reduce: false
           is_grouped: false
           group_info:
             label: ''
@@ -672,33 +733,35 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           entity_type: dependent_content
-          entity_field: label
-          plugin_id: string
+          entity_field: langcode
+          plugin_id: language
       sorts: {  }
       title: 'Dependent content'
       header: {  }
       footer: {  }
       empty:
-        area_text_custom:
-          id: area_text_custom
+        area:
+          id: area
           table: views
-          field: area_text_custom
+          field: area
           relationship: none
           group_type: group
           admin_label: ''
           empty: true
           tokenize: false
-          content: 'No dependent content available.'
-          plugin_id: text_custom
+          content:
+            value: 'No dependent content available.'
+            format: basic_html
+          plugin_id: text
       relationships:
         uid:
           id: uid
-          table: dependent_content
+          table: dependent_content_field_data
           field: uid
           relationship: none
           group_type: group
           admin_label: User
-          required: true
+          required: false
           entity_type: dependent_content
           entity_field: uid
           plugin_id: standard
@@ -715,7 +778,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user
         - user.permissions
       tags: {  }
   page_1:
@@ -729,7 +791,7 @@ display:
       menu:
         type: tab
         title: 'Dependent content'
-        description: 'Find and manage dependent content'
+        description: ''
         expanded: false
         parent: system.admin_content
         weight: 0
@@ -742,6 +804,5 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user
         - user.permissions
       tags: {  }
