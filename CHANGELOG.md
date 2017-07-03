@@ -12,7 +12,12 @@ we're in early development, no upgrade path is provided.
 - Implemented revisions without UI. Added publishing actions. Fixed route path.
 
 - Updated basic dependent content. Improved dependent content view. Fixed edit
-path and local tasks. Removed view filter status. Added view filter published. 
+path and local tasks. Removed view filter status. Added view filter published.
+
+- Added data_table and revision_data_table to annotation. Fixed revision_user
+null on create. Added DependentContentRevisionController, 
+DependentContentRevisionRevertForm, DependentContentRevisionDeleteForm and the
+relative links and tasks.
 
 ## v0.1.2
 

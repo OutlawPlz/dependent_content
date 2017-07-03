@@ -57,6 +57,47 @@ entity.dependent_content.add_page:
   requirements:
     _entity_create_access: 'dependent_content'
 
+entity.dependent_content_revision.canonical:
+  path: '/dependent-content/{dependent_content}/revision/{dependent_content_revision}'
+  defaults:
+    _controller: '\Drupal\dependent_content\Controller\DependentContentRevisionController::viewPage'
+    _title_callback: '\Drupal\dependent_content\Controller\DependentContentRevisionController::viewPageTitle'
+  options:
+    dependent_content: \d+
+  requirements:
+    _permission: 'administer dependent content'
+
+entity.dependent_content_revision.revert_form:
+  path: '/dependent-content/{dependent_content}/revision/{dependent_content_revision}/revert'
+  defaults:
+    _form: '\Drupal\dependent_content\Form\DependentContentRevisionRevertForm'
+    _title: 'Revert to early revision'
+  options:
+    _admin_route: TRUE
+  requirements:
+    _permission: 'administer dependent content'
+
+entity.dependent_content_revision.delete_form:
+  path: '/dependent-content/{dependent_content}/revision/{dependent_content_revision}/delete'
+  defaults:
+    _form: '\Drupal\dependent_content\Form\DependentContentRevisionDeleteForm'
+    _title: 'Delete earlier revision'
+  options:
+    _admin_route: TRUE
+  requirements:
+    _permission: 'administer dependent content'
+
+entity.dependent_content_revision.history:
+  path: '/dependent-content/{dependent_content}/revision'
+  defaults:
+    _controller: '\Drupal\dependent_content\Controller\DependentContentRevisionController::listPage'
+    _title: 'Revision'
+  options:
+    _admin_route: TRUE
+    dependent_content: \d+
+  requirements:
+    _permission: 'administer dependent content'
+
 entity.dependent_content.collection:
   path: '/admin/content/dependent-content'
   defaults:

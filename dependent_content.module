@@ -10,20 +10,20 @@
  */
 function dependent_content_theme() {
 
-  $theme = [];
+  $theme = array();
 
-  $theme['dependent_content'] = [
+  $theme['dependent_content'] = array(
     'render element' => 'elements',
     'file' => 'dependent_content.page.inc',
     'template' => 'dependent-content'
-  ];
+  );
 
-  $theme['dependent_content_add_list'] = [
+  $theme['dependent_content_add_list'] = array(
     'render element' => 'content',
     'variables' => ['content' => NULL],
     'file' => 'dependent_content.page.inc',
     'template' => 'dependent-content-add-list'
-  ];
+  );
 
   return $theme;
 }

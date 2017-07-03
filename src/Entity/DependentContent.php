@@ -7,6 +7,7 @@
 namespace Drupal\dependent_content\Entity;
 
 use Drupal\Core\Entity\EntityPublishedTrait;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\RevisionLogEntityTrait;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
@@ -22,7 +23,9 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Dependent content"),
  *   bundle_label = @Translation("Dependent content type"),
  *   base_table = "dependent_content",
+ *   data_table = "dependent_content_field_data",
  *   revision_table = "dependent_content_revision",
+ *   revision_data_table = "dependent_content_field_revision",
  *   fieldable = TRUE,
  *   translatable = TRUE,
  *   show_revision_ui = TRUE,
@@ -53,8 +56,8 @@ use Drupal\user\UserInterface;
  *     "add-form" = "/dependent-content/add/{dependent_content_type}",
  *     "edit-form" = "/dependent-content/{dependent_content}/edit",
  *     "delete-form" = "/dependent-content/{dependent_content}/delete",
- *     "version-history" = "/dependent-content/{dependent_content}/revisions",
- *     "revision" = "/dependent-content/{dependent_content}/revisions/{dependent_content_revision}",
+ *     "revision" = "/dependent-content/{dependent_content}/revision/{dependent_content_revision}",
+ *     "revision-history" = "/dependent-content/{dependent_content}/revision",
  *     "collection" = "/admin/content/dependent-content"
  *   },
  *   bundle_entity_type = "dependent_content_type",
@@ -258,5 +261,19 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
       ->setRevisionable(TRUE);
 
     return $fields;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function preSave(EntityStorageInterface $storage) {
+
+    parent::preSave($storage);
+
+    $revision_user_id = $this->getRevisionUserId();
+
+    if (!$revision_user_id) {
+      $this->setRevisionUserId($this->getOwnerId());
+    }
   }
 }

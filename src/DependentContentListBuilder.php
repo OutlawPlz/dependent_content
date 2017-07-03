@@ -27,8 +27,11 @@ class DependentContentListBuilder extends EntityListBuilder {
    * DependentContentListBuilder constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type definition.
    * @param \Drupal\Core\Entity\EntityStorageInterface $storage
+   *   The entity storage class.
    * @param \Drupal\Core\Datetime\DateFormatInterface|\Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date formatter class.
    */
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, DateFormatterInterface $date_formatter) {
 
@@ -55,10 +58,15 @@ class DependentContentListBuilder extends EntityListBuilder {
    */
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
 
+    /** @var EntityStorageInterface $storage */
+    $storage = $container->get('entity_type.manager')->getStorage($entity_type->id());
+    /** @var DateFormatterInterface $date_formatter */
+    $date_formatter = $container->get('date.formatter');
+
     return new static(
       $entity_type,
-      $container->get('entity.manager')->getStorage($entity_type->id()),
-      $container->get('date.formatter')
+      $storage,
+      $date_formatter
     );
   }
 
