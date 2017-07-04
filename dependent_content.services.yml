@@ -1,0 +1,6 @@
+services:
+  dependent_content.revision_controller:
+    class: \Drupal\dependent_content\Controller\DependentContentRevisionController
+    arguments:
+      - '@entity_type.manager'
+      - '@date.formatter'

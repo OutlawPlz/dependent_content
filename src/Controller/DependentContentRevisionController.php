@@ -5,8 +5,9 @@ namespace Drupal\dependent_content\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
+use Drupal\Core\Url;
 use Drupal\dependent_content\Entity\DependentContentInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -39,14 +40,14 @@ class DependentContentRevisionController extends ControllerBase {
   /**
    * Construct a new DependentContentRevisionController object.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
-   *   The entity storage class.
+   * @param EntityTypeManagerInterface $manager
+   *   The entity type manager.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.
    */
-  public function __construct(EntityStorageInterface $storage, DateFormatterInterface $date_formatter) {
+  public function __construct(EntityTypeManagerInterface $manager, DateFormatterInterface $date_formatter) {
 
-    $this->storage = $storage;
+    $this->storage = $manager->getStorage('dependent_content');
     $this->dateFormatter = $date_formatter;
   }
 
@@ -55,13 +56,13 @@ class DependentContentRevisionController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
 
-    /** @var EntityStorageInterface $storage */
-    $storage = $container->get('entity_type.manager')->getStorage('dependent_content');
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $manager */
+    $manager = $container->get('entity_type.manager');
     /** @var \Drupal\Core\Datetime\DateFormatterInterface $date_formatter */
     $date_formatter = $container->get('date.formatter');
 
     return new static(
-      $storage,
+      $manager,
       $date_formatter
     );
   }
@@ -88,6 +89,57 @@ class DependentContentRevisionController extends ControllerBase {
   }
 
   /**
+   * Provides an array of information to build a list of operation links.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface|RevisionLogInterface $entity
+   *   The entity the operations are for.
+   *
+   * @return array
+   *   An associative array of operation link data for this list, keyed by
+   *   operation name, containing the following key-value pairs:
+   */
+  public function getOperations(EntityInterface $entity) {
+
+    $operations = array();
+
+    if ($entity->access('update')) {
+      $operations['revert'] = array(
+        'title' => $this->t('Revert'),
+        'weight' => 10,
+        'url' => Url::fromRoute('entity.dependent_content_revision.revert_form', array(
+          'dependent_content' => $entity->id(),
+          'dependent_content_revision' => $entity->getRevisionId()
+        ))
+      );
+    }
+
+    if ($entity->access('view')) {
+      $operations['view'] = array(
+        'title' => $this->t('View'),
+        'weight' => 50,
+        'url' => Url::fromRoute('entity.dependent_content_revision.canonical', array(
+          'dependent_content' => $entity->id(),
+          'dependent_content_revision' => $entity->getRevisionId()
+        ))
+
+      );
+    }
+
+    if ($entity->access('delete')) {
+      $operations['delete'] = array(
+        'title' => $this->t('Delete'),
+        'weight' => 100,
+        'url' => Url::fromRoute('entity.dependent_content_revision.delete_form', array(
+          'dependent_content' => $entity->id(),
+          'dependent_content_revision' => $entity->getRevisionId()
+        ))
+      );
+    }
+
+    return $operations;
+  }
+
+  /**
    * Builds the header row for the entity revision listing.
    *
    * @return array
@@ -96,28 +148,25 @@ class DependentContentRevisionController extends ControllerBase {
   public function buildHeader() {
 
     return array(
-      'current' => $this->t('Current'),
       'log_message' => $this->t('Log message'),
       'author' => $this->t('Author'),
-      'created' => $this->t('Created')
+      'created' => $this->t('Created'),
+      'operations' => $this->t('Operations')
     );
   }
 
   /**
    * Builds the header row for the entity revision listing.
    *
-   * @param \Drupal\Core\Entity\RevisionLogInterface $entity
+   * @param EntityInterface|\Drupal\Core\Entity\RevisionLogInterface $entity
    *   The entity revision fot this row of the list.
    *
    * @return array
    *   A render array structure of fields for this entity revision.
    */
-  public function buildRow(RevisionLogInterface $entity) {
+  public function buildRow(EntityInterface $entity) {
 
     return array(
-      'current' => array(
-        'data' => $entity->isDefaultRevision() ? array('#markup' => '<em>Current revision</em>') : ''
-      ),
       'log_message' => array(
         'data' => array('#markup' => $entity->getRevisionLogMessage())
       ),
@@ -127,7 +176,34 @@ class DependentContentRevisionController extends ControllerBase {
           '#account' => $entity->getRevisionUser()
         )
       ),
-      'created' => $this->dateFormatter->format($entity->getRevisionCreationTime(), 'short')
+      'created' => $this->dateFormatter->format($entity->getRevisionCreationTime(), 'short'),
+      'operations' => array(
+        'data' => $this->buildOperations($entity)
+      )
+    );
+  }
+
+
+  /**
+   * Builds a row for an entity in the entity listing.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface|RevisionLogInterface $entity
+   *   The entity for this row of the list.
+   *
+   * @return array
+   *   A render array structure of fields for this entity.
+   */
+  public function buildOperations(EntityInterface $entity) {
+
+    if ($entity->isDefaultRevision()) {
+      return array(
+        '#markup' => '<em>Current revision</em>'
+      );
+    }
+
+    return array(
+      '#type' => 'operations',
+      '#links' => $this->getOperations($entity)
     );
   }
 

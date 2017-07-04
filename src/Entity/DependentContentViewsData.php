@@ -42,6 +42,14 @@ class DependentContentViewsData extends EntityViewsData implements EntityViewsDa
       )
     );
 
+    $data['dependent_content_field_revision']['revision_operations'] = array(
+      'title' => $this->t('Revision operations links'),
+      'help' => $this->t('Provides links to perform entity revision operations.'),
+      'field' => array(
+        'id' => 'dependent_content_revision_operations',
+      )
+    );
+
     return $data;
   }
 }

@@ -19,6 +19,9 @@ null on create. Added DependentContentRevisionController,
 DependentContentRevisionRevertForm, DependentContentRevisionDeleteForm and the
 relative links and tasks.
 
+- Added operations links to revision list. Added revision views and custom 
+operations links field. DependentContentRevisionController as a service.
+
 ## v0.1.2
 
 - Improved dependent-content.html.twig and preprocess function.
