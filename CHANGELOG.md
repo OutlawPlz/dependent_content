@@ -22,6 +22,9 @@ relative links and tasks.
 - Added operations links to revision list. Added revision views and custom 
 operations links field. DependentContentRevisionController as a service.
 
+- Added DependentContentModerationHandler. Improved revision list view. 
+Added DependentContentTypeController. Added revision local task.
+
 ## v0.1.2
 
 - Improved dependent-content.html.twig and preprocess function.

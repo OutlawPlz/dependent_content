@@ -2,6 +2,7 @@
 
 namespace Drupal\dependent_content\Controller;
 
+
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -71,17 +72,19 @@ class DependentContentRevisionController extends ControllerBase {
    * Loads entity revision IDs using a pager sorted by the entity id.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
-   *
+   *   The entity object.
    *
    * @return array
    *   An array of entity revision IDs.
    */
   public function getEntityRevisionIds(EntityInterface $entity) {
 
+    $entity_type = $entity->getEntityType();
+
     $result = $this->storage->getQuery()
       ->allRevisions()
-      ->condition($entity->getEntityType()->getKey('id'), $entity->id())
-      ->sort($entity->getEntityType()->getKey('revision'), 'DESC')
+      ->condition($entity_type->getKey('id'), $entity->id())
+      ->sort($entity_type->getKey('revision'), 'DESC')
       ->pager($this->limit)
       ->execute();
 
@@ -195,9 +198,16 @@ class DependentContentRevisionController extends ControllerBase {
    */
   public function buildOperations(EntityInterface $entity) {
 
+    /** @var DependentContentInterface $entity */
     if ($entity->isDefaultRevision()) {
       return array(
-        '#markup' => '<em>Current revision</em>'
+        '#markup' => '<em><b>Current revision</b></em>'
+      );
+    }
+
+    if (!$entity->isRevisionTranslationAffected()) {
+      return array(
+        '#markup' => '<em>Copied from translation</em>'
       );
     }
 
@@ -216,7 +226,7 @@ class DependentContentRevisionController extends ControllerBase {
    * @return array
    *   A render array for table.html.twig.
    */
-  public function listPage(DependentContentInterface $dependent_content) {
+  public function historyPage(DependentContentInterface $dependent_content) {
 
     $build['table'] = array(
       '#type' => 'table',
@@ -230,14 +240,17 @@ class DependentContentRevisionController extends ControllerBase {
     );
 
     $vids = $this->getEntityRevisionIds($dependent_content);
+    $langcode = $dependent_content->language()->getId();
 
     foreach ($vids as $vid) {
-      /** @var RevisionLogInterface $entity_revision */
+      /** @var DependentContentInterface $entity_revision */
       $entity_revision = $this->storage->loadRevision($vid);
 
-      if ($row = $this->buildRow($entity_revision)) {
-        $build['table']['#rows'][$entity_revision->getRevisionId()] = $row;
+      if ($entity_revision->hasTranslation($langcode)) {
+        $entity_revision = $entity_revision->getTranslation($langcode);
       }
+
+      $build['table']['#rows'][$entity_revision->getRevisionId()] = $this->buildRow($entity_revision);
     }
 
     if ($this->limit) {
@@ -281,6 +294,11 @@ class DependentContentRevisionController extends ControllerBase {
 
     /** @var DependentContentInterface $entity_revision */
     $entity_revision = $this->storage->loadRevision($dependent_content_revision);
+    $langcode = $this->languageManager()->getCurrentLanguage()->getId();
+
+    if ($entity_revision->hasTranslation($langcode)) {
+      $entity_revision->getTranslation($langcode);
+    }
 
     return $this->t('Revision of %title from %date', array(
       '%title' => $entity_revision->label(),

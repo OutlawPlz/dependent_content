@@ -1,8 +1,8 @@
 # Action a.k.a Buttons to do something
-# <module_name>.action.<route_name> - Route name refers to dependent_content.routing.yml
+# <entity_type>.action.<route_name> - Route name refers to dependent_content.routing.yml
 
-dependent_content.action.add_page:
-  route_name: 'entity.dependent_content.add_page'
+dependent_content_type.action.list:
+  route_name: 'entity.dependent_content_type.list'
   title: 'Add dependent content'
   appears_on:
     - entity.dependent_content.collection

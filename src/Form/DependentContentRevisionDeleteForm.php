@@ -3,22 +3,15 @@
 namespace Drupal\dependent_content\Form;
 
 
-use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DependentContentRevisionDeleteForm extends ConfirmFormBase {
-
-  /**
-   * The entity revision.
-   *
-   * @var \Drupal\Core\Entity\EntityInterface|\Drupal\Core\Entity\RevisionLogInterface
-   */
-  protected $revision;
 
   /**
    * The entity storage.
@@ -28,13 +21,6 @@ class DependentContentRevisionDeleteForm extends ConfirmFormBase {
   protected $storage;
 
   /**
-   * The database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected $connection;
-
-  /**
    * The date formatter service.
    *
    * @var \Drupal\Core\Datetime\DateFormatterInterface
@@ -42,20 +28,26 @@ class DependentContentRevisionDeleteForm extends ConfirmFormBase {
   protected $dateFormatter;
 
   /**
+   * The language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
    * DependentContentRevisionDeleteForm constructor.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
-   *   The entity storage.
-   * @param \Drupal\Core\Database\Connection $connection
-   *   The database connection.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $manager
+   *   The entity manager.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.
+   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
    */
-  public function __construct(EntityStorageInterface $storage, Connection $connection, DateFormatterInterface $date_formatter) {
+  public function __construct(EntityTypeManagerInterface $manager, DateFormatterInterface $date_formatter, LanguageManagerInterface $language_manager) {
 
-    $this->storage = $storage;
-    $this->connection = $connection;
+    $this->storage = $manager->getStorage('dependent_content');
     $this->dateFormatter = $date_formatter;
+    $this->languageManager = $language_manager;
   }
 
   /**
@@ -63,17 +55,17 @@ class DependentContentRevisionDeleteForm extends ConfirmFormBase {
    */
   public static function create(ContainerInterface $container) {
 
-    /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
-    $storage = $container->get('entity_type.manager')->getStorage('dependent_content');
-    /** @var \Drupal\Core\Database\Connection $connection */
-    $connection = $container->get('database');
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $manager */
+    $manager = $container->get('entity_type.manager');
     /** @var \Drupal\Core\Datetime\DateFormatterInterface $date_formatter */
     $date_formatter = $container->get('date.formatter');
+    /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
+    $language_manager = $container->get('language_manager');
 
     return new static(
-      $storage,
-      $connection,
-      $date_formatter
+      $manager,
+      $date_formatter,
+      $language_manager
     );
   }
 
@@ -85,8 +77,12 @@ class DependentContentRevisionDeleteForm extends ConfirmFormBase {
    */
   public function getQuestion() {
 
+    $dependent_content_revision = $this->getRequest()->get('dependent_content_revision');
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $revision */
+    $revision = $this->storage->loadRevision($dependent_content_revision);
+
     return $this->t('Are you sure you want to delete the revision from %date?', array(
-      '%date' => $this->dateFormatter->format($this->revision->getRevisionCreationTime(), 'short')
+      '%date' => $this->dateFormatter->format($revision->getRevisionCreationTime(), 'short')
     ));
   }
 
@@ -99,7 +95,7 @@ class DependentContentRevisionDeleteForm extends ConfirmFormBase {
   public function getCancelUrl() {
 
     return new Url('entity.dependent_content_revision.history', array(
-      'dependent_content' => $this->revision->id()
+      'dependent_content' => $this->getRequest()->get('dependent_content')
     ));
   }
 
@@ -127,7 +123,15 @@ class DependentContentRevisionDeleteForm extends ConfirmFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $dependent_content_revision = NULL) {
 
-    $this->revision = $this->storage->loadRevision($dependent_content_revision);
+    $langcode = $this->languageManager->getCurrentLanguage()->getId();
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $revision */
+    $revision = $this->storage->loadRevision($dependent_content_revision);
+
+    if ($revision->hasTranslation($langcode)) {
+      $revision = $revision->getTranslation($langcode);
+    }
+
+    $form_state->set('revision', $revision);
 
     return parent::buildForm($form, $form_state);
   }
@@ -142,22 +146,25 @@ class DependentContentRevisionDeleteForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    $this->storage->deleteRevision($this->revision->getRevisionId());
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $revision */
+    $revision = $form_state->get('revision');
+
+    $this->storage->deleteRevision($revision->getRevisionId());
 
     $this->logger('dependent content')->notice('%type: deleted %title revision %revision.', array(
-      '%type' => $this->revision->bundle(),
-      '%title' => $this->revision->label(),
-      '%revision' => $this->revision->getRevisionId()
+      '%type' => $revision->bundle(),
+      '%title' => $revision->label(),
+      '%revision' => $revision->getRevisionId()
     ));
 
     drupal_set_message($this->t('Revision from %revision-date of %type %title has been deleted.', array(
-      '%revision-date' => $this->dateFormatter->format($this->revision->getRevisionCreationTime(), 'short'),
-      '%type' => $this->revision->getEntityType()->getLabel(),
-      '%title' => $this->revision->label()
+      '%revision-date' => $this->dateFormatter->format($revision->getRevisionCreationTime(), 'short'),
+      '%type' => $revision->getEntityType()->getLabel(),
+      '%title' => $revision->label()
     )));
 
     $form_state->setRedirect('entity.dependent_content_revision.history', array(
-      'dependent_content' => $this->revision->id()
+      'dependent_content' => $revision->id()
     ));
   }
 }

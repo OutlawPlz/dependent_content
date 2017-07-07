@@ -11,10 +11,11 @@ entity.dependent_content.canonical:
 entity.dependent_content.add_form:
   path: '/dependent-content/add/{dependent_content_type}'
   defaults:
-    _controller: '\Drupal\dependent_content\Controller\DependentContentController::addForm'
+    _controller: '\Drupal\dependent_content\Controller\DependentContentController::addFormPage'
     _title: 'Add dependent content'
   options:
     _admin_route: TRUE
+    dependent_content_type: \d+
   requirements:
     _entity_create_access: 'dependent_content:{dependent_content_type}'
 
@@ -47,15 +48,15 @@ entity.dependent_content.multiple_delete_form:
   requirements:
     _permission: 'administer dependent content'
 
-entity.dependent_content.add_page:
-  path: '/dependent-content/add'
+entity.dependent_content.collection:
+  path: '/admin/content/dependent-content'
   defaults:
-    _controller: '\Drupal\dependent_content\Controller\DependentContentController::addPage'
-    _title: 'Add dependent content'
+    _entity_list: 'dependent_content'
+    _title: 'Dependent content'
   options:
     _admin_route: TRUE
   requirements:
-    _entity_create_access: 'dependent_content'
+    _permission: 'access dependent content overview'
 
 entity.dependent_content_revision.canonical:
   path: '/dependent-content/{dependent_content}/revision/{dependent_content_revision}'
@@ -90,23 +91,12 @@ entity.dependent_content_revision.delete_form:
 entity.dependent_content_revision.history:
   path: '/dependent-content/{dependent_content}/revision'
   defaults:
-    _controller: '\Drupal\dependent_content\Controller\DependentContentRevisionController::listPage'
+    _controller: '\Drupal\dependent_content\Controller\DependentContentRevisionController::historyPage'
     _title: 'Revision'
   options:
     _admin_route: TRUE
-    dependent_content: \d+
   requirements:
     _permission: 'administer dependent content'
-
-entity.dependent_content.collection:
-  path: '/admin/content/dependent-content'
-  defaults:
-    _entity_list: 'dependent_content'
-    _title: 'Dependent content'
-  options:
-    _admin_route: TRUE
-  requirements:
-    _permission: 'access dependent content overview'
 
 entity.dependent_content_type.canonical:
   path: '/admin/structure/dependent-content/{dependent_content_type}'
@@ -147,6 +137,16 @@ entity.dependent_content_type.delete_form:
     _admin_route: TRUE
   requirements:
     _permission: 'administer dependent content types'
+
+entity.dependent_content_type.list:
+  path: '/dependent-content/add'
+  defaults:
+    _controller: '\Drupal\dependent_content\Controller\DependentContentTypeController::listPage'
+    _title: 'Add dependent content'
+  options:
+    _admin_route: TRUE
+  requirements:
+    _entity_create_access: 'dependent_content'
 
 entity.dependent_content_type.collection:
   path: '/admin/structure/dependent-content'

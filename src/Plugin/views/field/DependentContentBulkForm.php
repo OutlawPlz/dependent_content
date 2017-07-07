@@ -4,7 +4,7 @@
  * Contains \Drupal\dependent_content\Plugin\views\field\BulkForm\DependentContentBulkForm
  */
 
-namespace Drupal\dependent_content\Plugin\views\field\BulkForm;
+namespace Drupal\dependent_content\Plugin\views\field;
 
 
 use Drupal\system\Plugin\views\field\BulkForm;

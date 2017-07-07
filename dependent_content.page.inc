@@ -33,19 +33,25 @@ function template_preprocess_dependent_content(&$variables) {
  *   An associative array containing:
  *   - content: An array of dependent content types.
  */
-function template_preprocess_dependent_content_add_list(&$variables) {
+function template_preprocess_dependent_content_bundle_list(&$variables) {
 
-  $variables['types'] = array();
+  $variables['bundles'] = array();
 
   if (!empty($variables['content'])) {
-    /** @var $type \Drupal\dependent_content\Entity\DependentContentType */
-    foreach ($variables['content'] as $type) {
-      $variables['types'][$type->id()] = array(
-        'label' => $type->label(),
-        'link' => Link::createFromRoute($type->label(), 'entity.dependent_content.add_form', ['dependent_content_type' => $type->id()]),
-        'url' => Url::fromRoute('entity.dependent_content.add_form', ['dependent_content_type' => $type->id()]),
+
+    /** @var \Drupal\dependent_content\Entity\DependentContentTypeInterface $bundle */
+    foreach ($variables['content'] as $bundle) {
+
+      $variables['types'][$bundle->id()] = array(
+        'label' => $bundle->label(),
+        'link' => Link::createFromRoute($bundle->label(), 'entity.dependent_content.add_form', array(
+          'dependent_content_type' => $bundle->id()
+        )),
+        'url' => Url::fromRoute('entity.dependent_content.add_form', array(
+          'dependent_content_type' => $bundle->id()
+        )),
         'description' => array(
-          '#markup' => $type->get('description'),
+          '#markup' => $bundle->get('description'),
         ),
       );
     }

@@ -1,11 +1,11 @@
 <?php
-
 /**
  * @file
  * Contains \Drupal\dependent_content\DependentContentListBuilder
  */
 
 namespace Drupal\dependent_content;
+
 
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityInterface;

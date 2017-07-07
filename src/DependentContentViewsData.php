@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Contains \Drupal\dependent_content\Entity\DependentContentViewsData
+ * Contains \Drupal\dependent_content\DependentContentViewsData
  */
 
-namespace Drupal\dependent_content\Entity;
+namespace Drupal\dependent_content;
 
 use Drupal\views\EntityViewsData;
 use Drupal\views\EntityViewsDataInterface;

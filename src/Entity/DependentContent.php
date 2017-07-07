@@ -6,6 +6,7 @@
 
 namespace Drupal\dependent_content\Entity;
 
+
 use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\RevisionLogEntityTrait;
@@ -42,19 +43,20 @@ use Drupal\user\UserInterface;
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\dependent_content\DependentContentListBuilder",
- *     "views_data" = "Drupal\dependent_content\Entity\DependentContentViewsData",
+ *     "views_data" = "Drupal\dependent_content\DependentContentViewsData",
  *     "access" = "Drupal\dependent_content\DependentContentAccessControlHandler",
+ *     "moderation" = "Drupal\dependent_content\DependentContentModerationHandler",
  *     "form" = {
  *       "default" = "Drupal\dependent_content\Form\DependentContentForm",
  *       "add" = "Drupal\dependent_content\Form\DependentContentForm",
  *       "edit" = "Drupal\dependent_content\Form\DependentContentForm",
  *       "delete" = "Drupal\dependent_content\Form\DependentContentDeleteForm"
- *     }
+ *     },
  *   },
  *   links = {
  *     "canonical" = "/dependent-content/{dependent_content}",
  *     "add-form" = "/dependent-content/add/{dependent_content_type}",
- *     "edit-form" = "/dependent-content/{dependent_content}/edit",
+ *     "edit-form" = "/dependent-content/{dependent_content}",
  *     "delete-form" = "/dependent-content/{dependent_content}/delete",
  *     "revision" = "/dependent-content/{dependent_content}/revision/{dependent_content_revision}",
  *     "revision-history" = "/dependent-content/{dependent_content}/revision",
@@ -260,6 +262,13 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE);
 
+    $fields['revision_translation_affected'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Revision translation affected'))
+      ->setDescription(t('Indicates if the last edit of a translation belongs to current revision.'))
+      ->setReadOnly(TRUE)
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE);
+
     return $fields;
   }
 
@@ -270,9 +279,7 @@ class DependentContent extends ContentEntityBase implements DependentContentInte
 
     parent::preSave($storage);
 
-    $revision_user_id = $this->getRevisionUserId();
-
-    if (!$revision_user_id) {
+    if (!$this->getRevisionUserId()) {
       $this->setRevisionUserId($this->getOwnerId());
     }
   }
