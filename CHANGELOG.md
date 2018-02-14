@@ -2,47 +2,81 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+Log of unreleased changes.
+
+### Changed
+
+- Improved `CHANGELOG.md` based on Keepachangelog.com site.
+
+### Fixed
+
+- Fixed delete bulk operation.
+- [#1](https://github.com/OutlawPlz/dependent_content/issues/1) - Fixed empty
+page on `/dependent-content/add` route.
+
 ## v0.2.0
 
-**Attention** - This release breaks compatibility with previous releases. Since 
+Released on **2017/07/07**.
+
+This release breaks compatibility with previous releases. Since
 we're in early development, no upgrade path is provided.
 
-- Use EntityChangedTrait and EntityPublishedTrait. Translatable entity.
+### Added
 
-- Implemented revisions without UI. Added publishing actions. Fixed route path.
+- Makes entity translatable.
+- Implemented revisions without UI.
+- Added publishing actions.
+- Added view filter published.
+- Added `data_table` and `revision_data_table` to annotation.
+- Added `DependentContentRevisionController`,
+`DependentContentRevisionRevertForm`, `DependentContentRevisionDeleteForm`.
+- Added revision related links and tasks.
+- Added revision related view.
+- Added `DependentContentTypeController`.
 
-- Updated basic dependent content. Improved dependent content view. Fixed edit
-path and local tasks. Removed view filter status. Added view filter published.
+### Changed
 
-- Added data_table and revision_data_table to annotation. Fixed revision_user
-null on create. Added DependentContentRevisionController, 
-DependentContentRevisionRevertForm, DependentContentRevisionDeleteForm and the
-relative links and tasks.
+- Use EntityChangedTrait and EntityPublishedTrait.
+- Updated basic dependent content.
+- Improved dependent content view.
+- `DependentContentRevisionController` as a service.
 
-- Added operations links to revision list. Added revision views and custom 
-operations links field. DependentContentRevisionController as a service.
+### Fixed
 
-- Added DependentContentModerationHandler. Improved revision list view. 
-Added DependentContentTypeController. Added revision local task.
+- Fixed route path.
+- Fixed edit path and local task.
+- Fixed `revision_user` set to `NULL` on create.
+
+### Removed
+
+- Removed view filter status.
 
 ## v0.1.2
 
-- Improved dependent-content.html.twig and preprocess function.
+Released on **2017/06/23**.
 
-- Added bulk operations publish and unpublish.
+### Added
 
-- Added bulk operations delete with confirmation form.
+- Added publish and unpublish bulk operation.
+- Added delete bulk operation with confirmation form.
+- Added `README.md` file.
+- Added `basic` dependent content type.
 
-- Added README.
+### Changed
 
-- Added basic_dependent_content type.
+- Improved `dependent-content.html.twig` and preprocess function.
 
 ## v0.1.1
 
-- Fixed access dependent content permission bug. Fixed declaration 
-incompatibility.
+Released on **2017/06/23**.
+
+### Fixed
+
+- Fixed access dependent content permission bug.
+- Fixed declaration incompatibility.
 
 ## v0.1.0
 
 - First release.
- 

@@ -6,8 +6,9 @@
 
 namespace Drupal\dependent_content\Entity;
 
+use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
-
+use Drupal\Core\Entity\Annotation\ConfigEntityType;
 
 /**
  * Defines the dependent content type configuration entity.

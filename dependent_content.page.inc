@@ -4,9 +4,8 @@
  * Contains dependent_content.page.inc
  */
 
-use \Drupal\Core\Link;
 use \Drupal\Core\Render\Element;
-use Drupal\Core\Url;
+use \Drupal\Core\Url;
 
 /**
  * Prepare variables for dependent content templates.
@@ -36,24 +35,19 @@ function template_preprocess_dependent_content(&$variables) {
 function template_preprocess_dependent_content_bundle_list(&$variables) {
 
   $variables['bundles'] = array();
-
-  if (!empty($variables['content'])) {
-
-    /** @var \Drupal\dependent_content\Entity\DependentContentTypeInterface $bundle */
-    foreach ($variables['content'] as $bundle) {
-
-      $variables['types'][$bundle->id()] = array(
-        'label' => $bundle->label(),
-        'link' => Link::createFromRoute($bundle->label(), 'entity.dependent_content.add_form', array(
-          'dependent_content_type' => $bundle->id()
-        )),
-        'url' => Url::fromRoute('entity.dependent_content.add_form', array(
-          'dependent_content_type' => $bundle->id()
-        )),
-        'description' => array(
-          '#markup' => $bundle->get('description'),
-        ),
-      );
-    }
+  $variables['create_bundle_url'] = Url::fromRoute('entity.dependent_content_type.add_form');
+  // If there are no bundles, return.
+  if (empty($variables['elements']['#bundles'])) {
+    return;
+  }
+  // Otherwise, for each bundle build variables.
+  foreach ($variables['elements']['#bundles'] as $bundle_id => $bundle) {
+    $variables['bundles'][$bundle_id] = array(
+      'label' => $bundle->label(),
+      'url' => Url::fromRoute('entity.dependent_content.add_form', array(
+        'dependent_content_type' => $bundle->id()
+      )),
+      'description' => $bundle->get('description')
+    );
   }
 }

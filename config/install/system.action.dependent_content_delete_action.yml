@@ -4,7 +4,7 @@ dependencies:
   module:
     - dependent_content
 id: dependent_content_delete_action
-label: 'Delete dependent content'
+label: 'Delete content'
 type: dependent_content
 plugin: dependent_content_delete_action
 configuration: {  }

@@ -18,11 +18,10 @@ function dependent_content_theme() {
     'template' => 'dependent-content'
   );
 
-  $theme['dependent_content_add_list'] = array(
-    'render element' => 'content',
-    'variables' => ['content' => NULL],
+  $theme['dependent_content_bundle_list'] = array(
+    'render element' => 'elements',
     'file' => 'dependent_content.page.inc',
-    'template' => 'dependent-content-add-list'
+    'template' => 'dependent-content-bundle-list'
   );
 
   return $theme;

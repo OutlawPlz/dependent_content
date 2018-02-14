@@ -3,11 +3,11 @@
 namespace Drupal\dependent_content\Form;
 
 
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\dependent_content\Entity\DependentContent;
 use Drupal\user\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -18,7 +18,7 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
    *
    * @var \Drupal\user\PrivateTempStore
    */
-  protected $tempStore;
+  protected $privateTempStore;
 
   /**
    * The dependent content storage.
@@ -28,25 +28,17 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
   protected $storage;
 
   /**
-   * The entities to delete.
-   *
-   * @var \Drupal\Core\Entity\EntityInterface[]
-   */
-  protected $entities;
-
-  /**
    * Constructs a DeleteMultiple form object.
    *
-   * @param \Drupal\user\PrivateTempStoreFactory $temp_store_factory
+   * @param \Drupal\user\PrivateTempStoreFactory $private_temp_store
    *   The tempstore factory.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $manager
    *   The entity manager.
    */
-  public function __construct(PrivateTempStoreFactory $temp_store_factory, EntityManagerInterface $manager) {
+  public function __construct(PrivateTempStoreFactory $private_temp_store, EntityTypeManagerInterface $manager) {
 
-    $this->tempStore = $temp_store_factory->get('dependent_content');
+    $this->privateTempStore = $private_temp_store->get('dependent_content');
     $this->storage = $manager->getStorage('dependent_content');
-    $this->entities = DependentContent::loadMultiple(array_keys($this->tempStore->get('multiple_delete')));
   }
 
   /**
@@ -68,7 +60,7 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
     /** @var PrivateTempStoreFactory $private_temp_store */
     $private_temp_store = $container->get('user.private_tempstore');
     /** @var \Drupal\Core\Entity\EntityManagerInterface $manager */
-    $manager = $container->get('entity.manager');
+    $manager = $container->get('entity_type.manager');
 
     return new static(
       $private_temp_store,
@@ -84,7 +76,9 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
    */
   public function getQuestion() {
 
-    return $this->formatPlural(count($this->entities), 'Are you sure you want to delete this item?', 'Are you sure you want to delete these items?');
+    $entities = $this->privateTempStore->get('delete_entities');
+
+    return $this->formatPlural(count($entities), 'Are you sure you want to delete this item?', 'Are you sure you want to delete these items?');
   }
 
   /**
@@ -106,7 +100,7 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
    */
   public function getFormId() {
 
-    return 'dependent_content_multiple_delete_form';
+    return 'dependent_content_delete_entities_form';
   }
 
   /**
@@ -114,7 +108,7 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
    */
   public function getConfirmText() {
 
-    return t('Delete');
+    return $this->t('Delete');
   }
 
   /**
@@ -130,20 +124,42 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
 
-    $items = array();
+    $form =  parent::buildForm($form, $form_state);
+    $entities = $this->privateTempStore->get('delete_entities');
 
-    foreach ($this->entities as $entity) {
-      $items[$entity->id()] = $entity->label();
-    }
-
-    $form['dependent_contents'] = array(
+    $form['items'] = array(
       '#theme' => 'item_list',
-      '#items' => $items
+      '#items' => array(),
     );
 
-    $form = parent::buildForm($form, $form_state);
+    /** @var ContentEntityInterface $entity */
+    foreach ($entities as $entity) {
+      $form['items']['#items'][$entity->id()] = array(
+        '#markup' => $this->buildItem($entity),
+      );
+    }
 
     return $form;
+  }
+
+  /**
+   * Build an item of the list.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity object.
+   *
+   * @return string
+   *   The list item content.
+   */
+  public function buildItem(ContentEntityInterface $entity) {
+
+    if ($entity->isDefaultTranslation()) {
+      return $this->t('@label (Original translation) - <em>All translations will be deleted</em>', array(
+        '@label' => $entity->label(),
+      ));
+    }
+
+    return $entity->label();
   }
 
   /**
@@ -156,14 +172,38 @@ class DependentContentMultipleDeleteForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    if ($form_state->getValue('confirm') && !empty($this->entities)) {
-      $count = count($this->entities);
-      $this->storage->delete($this->entities);
-      $this->logger('dependent_content')->notice("Deleted $count dependent contents.");
-      drupal_set_message($this->t("Deleted $count dependent contents."));
+    $entities = $this->privateTempStore->get('delete_entities');
+    $entities_groups = array();
+
+    /** @var ContentEntityInterface $entity */
+    foreach ($entities as $entity) {
+      // Groups entities by ID.
+      $entities_groups[$entity->id()][] = $entity;
     }
 
-    $this->tempStore->delete('multiple_delete');
+    foreach ($entities_groups as $id => $entities_group) {
+      /** @var ContentEntityInterface $entity_default_translation */
+      $entity_default_translation = $this->storage->load($id);
+
+      foreach ($entities_group as $entity) {
+        
+        if ($entity->isDefaultTranslation()) {
+          $entity->delete(); break;
+        }
+
+        $entity_default_translation->removeTranslation($entity->language()->getId());
+        $entity_default_translation->save();
+      }
+    }
+
+    $count = count($entities);
+    $message = $this->formatPlural($count, $this->t('Deleted 1 content.'), $this->t('Deleted @count contents.', array(
+      '@count' => $count
+    )));
+
+    drupal_set_message($message);
+    $this->logger('dependent content')->notice($message);
+
     $form_state->setRedirect('entity.dependent_content.collection');
   }
 }

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\dependent_content\DependentContentTypeListBuilder
- */
 
 namespace Drupal\dependent_content;
 
@@ -19,8 +15,8 @@ class DependentContentTypeListBuilder extends EntityListBuilder {
    */
   public function buildHeader() {
 
-    $header['label'] = t('Label');
-    $header['description'] = t('Description');
+    $header['label'] = $this->t('Label');
+    $header['description'] = $this->t('Description');
 
     return $header + parent::buildHeader();
   }
@@ -41,11 +37,12 @@ class DependentContentTypeListBuilder extends EntityListBuilder {
     /** @var \Drupal\dependent_content\Entity\DependentContentTypeInterface $entity */
 
     $row['label'] = $entity->label();
-    $row['description'] = $entity->get('description');
+    $row['description'] = array(
+      'data' => array('#markup' => $entity->get('description'))
+    );
 
     return $row + parent::buildRow($entity);
   }
-
 
   /**
    * Gets this list's default operations.

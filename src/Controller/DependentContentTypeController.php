@@ -52,18 +52,17 @@ class DependentContentTypeController extends ControllerBase {
   public function listPage() {
 
     $bundles = $this->storage->loadMultiple();
-
+    // If only one bundle, redirect to that bundle.
     if (count($bundles) === 1) {
       $bundle = array_shift($bundles);
-
       return $this->redirect('entity.dependent_content.add_form', array(
         'dependent_content_type' => $bundle->id()
       ));
     }
-
+    // Otherwise list all available bundle.
     return array(
       '#theme' => 'dependent_content_bundle_list',
-      '#content' => $bundles
+      '#bundles' => $bundles
     );
   }
 }

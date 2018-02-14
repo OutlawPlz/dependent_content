@@ -5,7 +5,7 @@ namespace Drupal\dependent_content\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Url;
@@ -71,13 +71,13 @@ class DependentContentRevisionController extends ControllerBase {
   /**
    * Loads entity revision IDs using a pager sorted by the entity id.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The entity object.
    *
    * @return array
    *   An array of entity revision IDs.
    */
-  public function getEntityRevisionIds(EntityInterface $entity) {
+  public function getEntityRevisionIds(ContentEntityInterface $entity) {
 
     $entity_type = $entity->getEntityType();
 
@@ -94,17 +94,18 @@ class DependentContentRevisionController extends ControllerBase {
   /**
    * Provides an array of information to build a list of operation links.
    *
-   * @param \Drupal\Core\Entity\EntityInterface|RevisionLogInterface $entity
+   * @param RevisionLogInterface $entity
    *   The entity the operations are for.
    *
    * @return array
    *   An associative array of operation link data for this list, keyed by
    *   operation name, containing the following key-value pairs:
    */
-  public function getOperations(EntityInterface $entity) {
+  public function getOperations(RevisionLogInterface $entity) {
 
     $operations = array();
 
+    /** @var ContentEntityInterface $entity */
     if ($entity->access('update')) {
       $operations['revert'] = array(
         'title' => $this->t('Revert'),
@@ -124,7 +125,6 @@ class DependentContentRevisionController extends ControllerBase {
           'dependent_content' => $entity->id(),
           'dependent_content_revision' => $entity->getRevisionId()
         ))
-
       );
     }
 
@@ -161,13 +161,13 @@ class DependentContentRevisionController extends ControllerBase {
   /**
    * Builds the header row for the entity revision listing.
    *
-   * @param EntityInterface|\Drupal\Core\Entity\RevisionLogInterface $entity
+   * @param RevisionLogInterface $entity
    *   The entity revision fot this row of the list.
    *
    * @return array
    *   A render array structure of fields for this entity revision.
    */
-  public function buildRow(EntityInterface $entity) {
+  public function buildRow(RevisionLogInterface $entity) {
 
     return array(
       'log_message' => array(
@@ -190,24 +190,17 @@ class DependentContentRevisionController extends ControllerBase {
   /**
    * Builds a row for an entity in the entity listing.
    *
-   * @param \Drupal\Core\Entity\EntityInterface|RevisionLogInterface $entity
+   * @param RevisionLogInterface $entity
    *   The entity for this row of the list.
    *
    * @return array
    *   A render array structure of fields for this entity.
    */
-  public function buildOperations(EntityInterface $entity) {
+  public function buildOperations(RevisionLogInterface $entity) {
 
-    /** @var DependentContentInterface $entity */
     if ($entity->isDefaultRevision()) {
       return array(
-        '#markup' => '<em><b>Current revision</b></em>'
-      );
-    }
-
-    if (!$entity->isRevisionTranslationAffected()) {
-      return array(
-        '#markup' => '<em>Copied from translation</em>'
+        '#markup' => '<em>Current revision</em>'
       );
     }
 
@@ -218,7 +211,7 @@ class DependentContentRevisionController extends ControllerBase {
   }
 
   /**
-   * Builds the revision listing for the given entity. Inspired by EntityListBuilder.
+   * Builds the revision listing for the given entity.
    *
    * @param \Drupal\dependent_content\Entity\DependentContentInterface $dependent_content
    *   The entity object.
@@ -243,14 +236,16 @@ class DependentContentRevisionController extends ControllerBase {
     $langcode = $dependent_content->language()->getId();
 
     foreach ($vids as $vid) {
-      /** @var DependentContentInterface $entity_revision */
+      /** @var RevisionLogInterface|ContentEntityInterface $entity_revision */
       $entity_revision = $this->storage->loadRevision($vid);
 
-      if ($entity_revision->hasTranslation($langcode)) {
+      if (!$dependent_content->isDefaultTranslation() && $entity_revision->hasTranslation($langcode)) {
         $entity_revision = $entity_revision->getTranslation($langcode);
       }
 
-      $build['table']['#rows'][$entity_revision->getRevisionId()] = $this->buildRow($entity_revision);
+      if ($entity_revision->isRevisionTranslationAffected() || $entity_revision->isDefaultRevision()) {
+        $build['table']['#rows'][$entity_revision->getRevisionId()] = $this->buildRow($entity_revision);
+      }
     }
 
     if ($this->limit) {
@@ -273,7 +268,7 @@ class DependentContentRevisionController extends ControllerBase {
    */
   public function viewPage($dependent_content_revision) {
 
-    /** @var DependentContentInterface $entity_revision */
+    /** @var ContentEntityInterface $entity_revision */
     $entity_revision = $this->storage->loadRevision($dependent_content_revision);
     /** @var \Drupal\Core\Entity\EntityViewBuilderInterface $view_builder */
     $view_builder = $this->entityTypeManager()->getViewBuilder('dependent_content');
@@ -292,7 +287,7 @@ class DependentContentRevisionController extends ControllerBase {
    */
   public function viewPageTitle($dependent_content_revision) {
 
-    /** @var DependentContentInterface $entity_revision */
+    /** @var ContentEntityInterface|RevisionLogInterface $entity_revision */
     $entity_revision = $this->storage->loadRevision($dependent_content_revision);
     $langcode = $this->languageManager()->getCurrentLanguage()->getId();
 

@@ -6,9 +6,9 @@
  * This list is displayed on the Add dependent content admin page.
  *
  * Available variables:
+ * - create_bundle_url: Path to create dependent content type.
  * - bundles: A list of dependent content bundles, each with the following properties:
  *   - label: Label of this bundle of dependent content.
- *   - link: Link to create a piece of content of this bundle.
  *   - url: Path to the add dependent content of this bundle page.
  *   - description: Description of this bundle of dependent content.
  *
@@ -17,8 +17,11 @@
  * @ingroup themeable
  */
 #}
-
-{% if bundles is not empty %}
+{% if bundles is empty %}
+  {% trans %}
+    <p>You have not created any dependent content type yet. Go to the <a href="{{ create_bundle_url }}">dependent content type creation page</a> to add a new dependent content type.</p>
+  {% endtrans %}
+{% else %}
   <ul class="admin-list">
     {% for bundle in bundles %}
       <li class="clearfix">
@@ -29,11 +32,4 @@
       </li>
     {% endfor %}
   </ul>
-{% else %}
-  <p>
-    {% set create_content = path('entity.dependent_content_bundle.add_form') %}
-    {% trans %}
-      You have not created any dependent content type yet. Go to the <a href="{{ create_content }}">dependent content type creation page</a> to add a new dependent content type.
-    {% endtrans %}
-  </p>
 {% endif %}

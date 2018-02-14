@@ -4,7 +4,10 @@ namespace Drupal\dependent_content\Plugin\Action;
 
 
 use Drupal\Core\Action\ActionBase;
+use Drupal\Core\Annotation\Action;
+use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\dependent_content\Entity\DependentContentInterface;
 
 /**
  * Unpublishes a dependent content.
@@ -37,19 +40,20 @@ class UnpublishDependentContent extends ActionBase {
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
 
-    /** @var \Drupal\dependent_content\DependentContentInterface $object */
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $object */
     $result = $object->access('update', $account, TRUE)
-      ->andIf($object->status->access('edit', $account, TRUE));
+      ->andIf($object->get('published')->access('edit', $account, TRUE));
 
     return $return_as_object ? $result : $result->isAllowed();
   }
 
   /**
    * Executes the plugin.
+   *
+   * @param \Drupal\dependent_content\Entity\DependentContentInterface|null $entity
    */
-  public function execute($entity = NULL) {
+  public function execute(DependentContentInterface $entity = NULL) {
 
-    /** @var \Drupal\dependent_content\DependentContentInterface */
-    $entity->setPublished(FALSE)->save();
+    $entity->setUnpublished()->save();
   }
 }

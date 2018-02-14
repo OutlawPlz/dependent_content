@@ -4,7 +4,7 @@ dependencies:
   module:
     - dependent_content
 id: dependent_content_publish_action
-label: 'Publish dependent content'
+label: 'Publish content'
 type: dependent_content
 plugin: dependent_content_publish_action
 configuration: {  }

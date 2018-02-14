@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Routing\RedirectDestinationTrait;
 use Drupal\dependent_content\Controller\DependentContentRevisionController;
+use Drupal\views\Annotation\ViewsField;
 use Drupal\views\Entity\Render\EntityTranslationRenderTrait;
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
@@ -130,7 +131,7 @@ class DependentContentRevisionOperations extends FieldPluginBase {
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
 
-    return parent::buildOptionsForm($form, $form_state);
+    parent::buildOptionsForm($form, $form_state);
   }
 
   /**
@@ -139,6 +140,7 @@ class DependentContentRevisionOperations extends FieldPluginBase {
   public function render(ResultRow $values) {
 
     $entity = $this->getEntity($values);
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $translated_entity */
     $translated_entity = $this->getEntityTranslation($entity, $values);
 
     return $this->revisionController->buildOperations($translated_entity);

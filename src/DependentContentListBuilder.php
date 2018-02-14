@@ -1,11 +1,6 @@
 <?php
-/**
- * @file
- * Contains \Drupal\dependent_content\DependentContentListBuilder
- */
 
 namespace Drupal\dependent_content;
-
 
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -126,7 +121,7 @@ class DependentContentListBuilder extends EntityListBuilder {
       '#theme' => 'username',
       '#account' => $entity->getOwner(),
     );
-    $row['status'] = $entity->isPublished() ? t('published') : t('not published');
+    $row['status'] = $entity->isPublished() ? $this->t('published') : $this->t('not published');
     $row['changed'] = $this->dateFormatter->format($entity->getChangedTime(), 'short');
 
     return $row + parent::buildRow($entity);

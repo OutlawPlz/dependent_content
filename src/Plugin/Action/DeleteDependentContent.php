@@ -2,7 +2,10 @@
 
 namespace Drupal\dependent_content\Plugin\Action;
 
+
 use Drupal\Core\Action\ActionBase;
+use Drupal\Core\Annotation\Action;
+use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\PrivateTempStoreFactory;
@@ -25,7 +28,7 @@ class DeleteDependentContent extends ActionBase implements ContainerFactoryPlugi
    *
    * @var \Drupal\user\PrivateTempStore
    */
-  protected $tempStore;
+  protected $privateTempStore;
 
   /**
    * Constructs a Drupal\Component\Plugin\PluginBase object.
@@ -40,7 +43,7 @@ class DeleteDependentContent extends ActionBase implements ContainerFactoryPlugi
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, PrivateTempStoreFactory $private_temp_store) {
 
-    $this->tempStore = $private_temp_store->get('dependent_content');
+    $this->privateTempStore = $private_temp_store->get('dependent_content');
 
     parent::__construct($configuration, $plugin_id, $plugin_definition);
   }
@@ -93,18 +96,8 @@ class DeleteDependentContent extends ActionBase implements ContainerFactoryPlugi
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
 
-    /** @var \Drupal\dependent_content\DependentContentInterface $object */
+    /** @var \Drupal\dependent_content\Entity\DependentContentInterface $object */
     return $object->access('delete', $account, $return_as_object);
-  }
-
-  /**
-   * Executes the plugin.
-   *
-   * @param null $object
-   */
-  public function execute($object = NULL) {
-
-    $this->executeMultiple([$object]);
   }
 
   /**
@@ -112,13 +105,14 @@ class DeleteDependentContent extends ActionBase implements ContainerFactoryPlugi
    */
   public function executeMultiple(array $entities) {
 
-    $info = array();
-
-    /** @var \Drupal\Core\Entity\EntityInterface $entity */
-    foreach ($entities as $entity) {
-      $info[$entity->id()] = $entity->language()->getId();
-    }
-
-    $this->tempStore->set('multiple_delete', $info);
+    // Delete previous data.
+    $this->privateTempStore->delete('delete_entities');
+    // Set current data.
+    $this->privateTempStore->set('delete_entities', $entities);
   }
+
+  /**
+   * Executes the plugin.
+   */
+  public function execute() {}
 }
