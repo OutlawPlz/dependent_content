@@ -19,7 +19,7 @@ function template_preprocess_dependent_content(&$variables) {
 
   $variables['dependent_content'] = $variables['elements']['#dependent_content'];
   $variables['view_mode'] = $variables['elements']['#view_mode'];
-
+  // Foreach element in side elements, copy it inside content array.
   foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
   }
@@ -45,7 +45,7 @@ function template_preprocess_dependent_content_bundle_list(&$variables) {
     $variables['bundles'][$bundle_id] = array(
       'label' => $bundle->label(),
       'url' => Url::fromRoute('entity.dependent_content.add_form', array(
-        'dependent_content_type' => $bundle->id()
+        'dependent_content_type' => $bundle_id
       )),
       'description' => $bundle->get('description')
     );

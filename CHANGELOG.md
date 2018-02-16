@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+Log of unreleased changes.
+
+### Added
+
+- [#2](https://github.com/OutlawPlz/dependent_content/issues/2) - Added
+contextual links.
+
 ## v0.2.1
 
 Released on **2018/02/14**.

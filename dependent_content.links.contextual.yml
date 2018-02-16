@@ -2,8 +2,3 @@ entity.dependent_content.edit_form:
   title: 'Edit'
   route_name: 'entity.dependent_content.edit_form'
   group: 'dependent_content'
-
-entity.dependent_content.delete_form:
-  title: 'Delete'
-  route_name: 'entity.dependent_content.delete_form'
-  group: 'dependent_content'

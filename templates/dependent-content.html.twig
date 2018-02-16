@@ -1,14 +1,27 @@
 {#
 /**
  * @file dependent_content.html.twig
- * Default theme implementation to present Dependent content data.
+ * Default theme implementation to present dependent content data.
  *
- * This template is used when viewing Dependent content pages.
- *
+ * This template is used when viewing dependent content entity.
  *
  * Available variables:
- * - content: A list of content items. Use 'content' to print all content, or
- * - attributes: HTML attributes for the container element.
+ * - dependent_content: The dependent content entity with limited access to
+ *   object properties and methods.
+ * - content: All dependent content fields. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - attributes: HTML attributes for the containing element.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - content_attributes: Same as attributes, except applied to the main
+ *   content tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ * - view_mode: View mode; for example, "teaser" or "full".
  *
  * @see template_preprocess_dependent_content()
  *
@@ -24,7 +37,7 @@
   ]
 %}
 <div{{ attributes.addClass(classes) }}>
-  {% if content %}
-    {{ content }}
-  {% endif %}
+  {{ title_prefix }}
+  {{ content }}
+  {{ title_suffix }}
 </div>
