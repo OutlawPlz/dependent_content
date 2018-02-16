@@ -41,7 +41,7 @@ use Drupal\user\UserInterface;
  *     "uuid" = "uuid"
  *   },
  *   handlers = {
- *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
+ *     "view_builder" = "Drupal\dependent_content\DependentContentViewBuilder",
  *     "list_builder" = "Drupal\dependent_content\DependentContentListBuilder",
  *     "views_data" = "Drupal\dependent_content\DependentContentViewsData",
  *     "access" = "Drupal\dependent_content\DependentContentAccessControlHandler",
