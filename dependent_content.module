@@ -10,18 +10,17 @@
  */
 function dependent_content_theme() {
 
-  $theme = array();
-
-  $theme['dependent_content'] = array(
-    'render element' => 'elements',
-    'file' => 'dependent_content.page.inc',
-    'template' => 'dependent-content'
-  );
-
-  $theme['dependent_content_bundle_list'] = array(
-    'render element' => 'elements',
-    'file' => 'dependent_content.page.inc',
-    'template' => 'dependent-content-bundle-list'
+  $theme = array(
+    'dependent_content' => array(
+      'render element' => 'elements',
+      'file' => 'dependent_content.page.inc',
+      'template' => 'dependent-content'
+    ),
+    'dependent_content_bundle_list' => array(
+      'render element' => 'elements',
+      'file' => 'dependent_content.page.inc',
+      'template' => 'dependent-content-bundle-list'
+    )
   );
 
   return $theme;
@@ -32,16 +31,17 @@ function dependent_content_theme() {
  */
 function dependent_content_theme_suggestions_dependent_content(array $variables) {
 
-  $suggestions = array();
-  /** @var \Drupal\dependent_content\Entity\DependentContent $entity */
+  /** @var \Drupal\dependent_content\Entity\DependentContentInterface $entity */
   $entity = $variables['elements']['#dependent_content'];
   $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
 
-  $suggestions[] = 'dependent_content__' . $sanitized_view_mode;
-  $suggestions[] = 'dependent_content__' . $entity->bundle();
-  $suggestions[] = 'dependent_content__' . $entity->bundle() . '__' . $sanitized_view_mode;
-  $suggestions[] = 'dependent_content__' . $entity->id();
-  $suggestions[] = 'dependent_content__' . $entity->id() . '__' . $sanitized_view_mode;
+  $suggestions = array(
+    'dependent_content__' . $sanitized_view_mode,
+    'dependent_content__' . $entity->bundle(),
+    'dependent_content__' . $entity->bundle() . '__' . $sanitized_view_mode,
+    'dependent_content__' . $entity->id(),
+    'dependent_content__' . $entity->id() . '__' . $sanitized_view_mode
+  );
 
   return $suggestions;
 }

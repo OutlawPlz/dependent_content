@@ -11,6 +11,11 @@ Log of unreleased changes.
 - [#2](https://github.com/OutlawPlz/dependent_content/issues/2) - Added
 contextual links.
 
+### Changed
+
+- Minor refactoring on `dependent-content.html.twig`, `dependent_content_theme()`,
+`dependent_content_theme_suggestions_dependent_content()`.
+
 ## v0.2.1
 
 Released on **2018/02/14**.

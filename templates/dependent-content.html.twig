@@ -38,6 +38,10 @@
 %}
 <div{{ attributes.addClass(classes) }}>
   {{ title_prefix }}
-  {{ content }}
+  {#
+    Do not print the label, manage its visibility in field's display options.
+    {{ content.label }}
+  #}
   {{ title_suffix }}
+  {{ content }}
 </div>
